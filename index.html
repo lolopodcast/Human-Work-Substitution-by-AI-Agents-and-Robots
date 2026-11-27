@@ -1,0 +1,3128 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HMS | How AI Agents and Robots Substitute Human Work</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'], serif: ['Merriweather','serif'] } } }
+};
+</script>
+<style>
+@keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+.animate-fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+.perspective { perspective: 1000px; }
+.transform-style-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark ::-webkit-scrollbar-thumb { background: #475569; }
+header, footer, button, [role="button"], .ui-decoration { -webkit-user-select: none; user-select: none; }
+input, textarea, select { -webkit-user-select: text; user-select: text; }
+#ksa-toast { position: fixed; left: 50%; bottom: 56px; transform: translateX(-50%); z-index: 200; background: #004030; color: #D8C3A5; padding: 10px 18px; border-radius: 10px; font: 500 13px Inter, sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,.25); opacity: 0; transition: opacity .25s; pointer-events: none; }
+#ksa-toast.show { opacity: 1; }
+</style>
+</head>
+<body class="bg-[#f4f4f4] dark:bg-[#121212] text-slate-800 dark:text-slate-200 font-sans overflow-x-hidden selection:bg-[#004030] selection:text-white dark:selection:bg-[#D8C3A5] dark:selection:text-[#004030]">
+<script>
+(function(){
+  var ALLOWED = ['lolopodcast.github.io','localhost','127.0.0.1'];
+  var REDIRECT = 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo';
+  if (!ALLOWED.some(function(d){ return location.hostname === d || location.hostname.endsWith('.'+d); })) {
+    document.body.innerHTML = '<div style="text-align:center;padding:60px;font-family:sans-serif"><h1>Access Denied</h1><p>This resource is not authorised on this domain.</p></div>';
+    window.__HMS_BLOCKED__ = true;
+    setTimeout(function(){ location.href = REDIRECT; }, 3000);
+    return;
+  }
+  if (window.self !== window.top) {
+    try { window.top.location.href = window.self.location.href; }
+    catch(e) { document.body.innerHTML = '<div style="text-align:center;padding:60px"><h1>Frame Blocked</h1><p>This content cannot be embedded.</p></div>'; window.__HMS_BLOCKED__ = true; }
+  }
+})();
+var COPYRIGHT_MSG = 'Intellectual Property of Prof. Shihmin Lo';
+function showCopyrightToast(){
+  var el = document.getElementById('ksa-toast');
+  if (!el) { el = document.createElement('div'); el.id = 'ksa-toast'; document.body.appendChild(el); }
+  el.textContent = COPYRIGHT_MSG;
+  el.classList.add('show');
+  clearTimeout(window.__ksaToastT);
+  window.__ksaToastT = setTimeout(function(){ el.classList.remove('show'); }, 2000);
+}
+document.addEventListener('contextmenu', function(e){
+  var sel = window.getSelection().toString().trim();
+  if (sel.length > 0) return true;
+  e.preventDefault(); showCopyrightToast();
+});
+document.addEventListener('keydown', function(e){
+  var k = (e.key || '').toLowerCase();
+  if (e.key === 'F12') { e.preventDefault(); showCopyrightToast(); return; }
+  if (e.ctrlKey && k === 'u') { e.preventDefault(); showCopyrightToast(); return; }
+  if (e.ctrlKey && e.shiftKey && ['i','j','c'].indexOf(k) >= 0) { e.preventDefault(); showCopyrightToast(); return; }
+});
+document.addEventListener('dragstart', function(e){
+  if (e.target.tagName === 'IMG' || (e.target.closest && e.target.closest('svg'))) e.preventDefault();
+});
+</script>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+if (window.__HMS_BLOCKED__) { throw new Error('blocked'); }
+
+const _SALT = 'HMS2026';
+const _e = (s, n) => { const p = s + ':' + n; let r = ''; for (let i = 0; i < p.length; i++) r += String.fromCharCode(p.charCodeAt(i) ^ ((i + 7) * 3 & 0xFF)); return btoa(r); };
+const _d = (token) => { const decoded = atob(token); let r = ''; for (let i = 0; i < decoded.length; i++) r += String.fromCharCode(decoded.charCodeAt(i) ^ ((i + 7) * 3 & 0xFF)); return parseInt(r.split(':')[1], 10); };
+const _A0 = _e(_SALT, 0), _A1 = _e(_SALT, 1), _A2 = _e(_SALT, 2), _A3 = _e(_SALT, 3);
+
+const sanitizeStudentId = (v) => v.replace(/[^0-9]/g, '').slice(0, 12);
+const sanitizeName = (v) => v.replace(/[<>"'&\\]/g, '').slice(0, 50);
+const sanitizeDept = (v) => v.replace(/[<>"'&\\]/g, '').slice(0, 20);
+
+const NUM_LEARN = 7;
+const TOTAL = 1 + NUM_LEARN + 3;
+const IDX_LAB = NUM_LEARN + 1;
+const IDX_RES = NUM_LEARN + 2;
+const IDX_ANA = NUM_LEARN + 3;
+const APP_VER = '2026.11.27';
+
+const dict = {
+ "zh": {
+  "brand": "HMS",
+  "title": "人工智慧代理與實體機器人對人類工作的替代性",
+  "subtitle": "以駕駛、教師與保母為例的系統化分析",
+  "nav_modules": "單元目錄",
+  "nav_prev": "← 上一單元",
+  "nav_next": "下一單元 →",
+  "nav_home": "首頁",
+  "key_terms": "關鍵專有名詞",
+  "flip_prompt": "點擊翻轉",
+  "flip_status": "已讀 {read} / 已顯示 {shown} / 總計 {total}",
+  "flip_next": "下一組",
+  "flip_retry": "重新開始",
+  "audio_read": "語音導覽",
+  "audio_stop": "停止",
+  "quiz_title": "模組知識檢定",
+  "quiz_status": "答對 {correct} / 已答 {answered} / 總計 {total}",
+  "quiz_next": "下一組",
+  "quiz_retry": "重新測驗",
+  "submit": "提交答案",
+  "score": "得分",
+  "correct": "正確",
+  "incorrect": "錯誤",
+  "explanation": "解析",
+  "colon": "：",
+  "overview_label": "Overview 概述",
+  "highlights_label": "Highlights 重點",
+  "deep_dive_label": "Deep Dive 深入解析",
+  "figure_label": "Figure 圖解",
+  "wrapup_label": "Wrap-up 總結",
+  "toast_copyright": "Intellectual Property of Prof. Shihmin Lo",
+  "analytics_title": "學習歷程分析",
+  "analytics_desc": "檢視您在各模組的停留時間、互動點擊、學習卡使用與測驗表現，找出需要複習的單元，並匯出學習歷程。",
+  "analytics_form_title": "基本資料（匯出前必填）",
+  "analytics_group": "組別",
+  "analytics_group_select": "請選擇",
+  "analytics_dept": "系級",
+  "analytics_dept_ph": "例：IBS3",
+  "analytics_id": "學號",
+  "analytics_id_ph": "例：113212599",
+  "analytics_name_en": "英文姓名",
+  "analytics_name_en_ph": "例：Shihmin Lo",
+  "analytics_name_zh": "中文姓名",
+  "analytics_name_zh_ph": "例：王阿吉",
+  "csv_title": "人機替代性",
+  "csv_headers": [
+   "組別",
+   "系級",
+   "學號",
+   "英文姓名",
+   "中文姓名",
+   "模組",
+   "停留時間（秒）",
+   "點擊次數",
+   "已瀏覽",
+   "答對題數",
+   "已答題數",
+   "總題數",
+   "答對率（%）",
+   "已讀卡數",
+   "總卡數",
+   "答錯題目"
+  ],
+  "csv_yes": "是",
+  "csv_no": "否",
+  "csv_sep": "；",
+  "analytics_export_csv": "匯出 CSV 歷程記錄",
+  "analytics_fill_required": "請填寫完整資訊以解鎖匯出",
+  "analytics_refresh_prompt": "網頁已更新，是否刷新紀錄儲存？",
+  "analytics_total_time": "總學習時間",
+  "analytics_total_clicks": "總互動點擊",
+  "analytics_overall_acc": "總體測驗答對率",
+  "analytics_card_usage": "學習卡使用率",
+  "analytics_module": "模組",
+  "analytics_time": "停留時間",
+  "analytics_clicks": "點擊次數",
+  "analytics_acc": "答對率",
+  "analytics_correct_ans_total": "答對 / 已填答 / 總題數",
+  "analytics_cards_read_total": "已讀 / 總卡數",
+  "analytics_no_data": "尚未測驗",
+  "analytics_sec": "秒",
+  "analytics_times": "次",
+  "analytics_progress_title": "整體學習進度",
+  "analytics_progress_visited": "已瀏覽",
+  "analytics_progress_not_visited": "未瀏覽",
+  "analytics_progress_quiz_done": "已測驗",
+  "analytics_wp_title": "弱點分析與複習建議",
+  "analytics_wp_incorrect": "答錯題目：",
+  "analytics_wp_goto": "→ 前往複習此模組",
+  "analytics_wp_allpass": "所有已測驗模組答對率均達 75% 以上，表現優異！",
+  "analytics_wp_none": "完成任一模組測驗後，這裡會列出需要複習的單元。",
+  "analytics_wp_saved": "💾 學習歷程已自動儲存於本機瀏覽器",
+  "analytics_wp_clear": "🗑 清除歷程",
+  "analytics_wp_clear_confirm": "確定要清除所有學習歷程資料嗎？此操作無法復原。",
+  "analytics_wp_tts_intro": "以下是您的弱點分析。",
+  "analytics_wp_tts_module": "模組：{name}，答對率 {acc}%，建議複習。",
+  "analytics_wp_tts_allpass": "恭喜！所有已測驗模組答對率均達 75% 以上。",
+  "analytics_detail_title": "各模組明細",
+  "group_options": [
+   "G1",
+   "G2",
+   "G3",
+   "G4",
+   "G5",
+   "G6",
+   "G7",
+   "G8",
+   "G9",
+   "G10",
+   "G11",
+   "G12",
+   "Others"
+  ],
+  "m0_nav": "0. 執行概要",
+  "m0_title": "執行概要",
+  "m0_intro": "人工智慧代理與實體機器人正在接手越來越多原本由人執行的工作，但「哪些工作會被取代」這個問題問錯了。工作是由許多任務組成的，替代發生在「任務 × 情境」的層次，而不是整個職業。本單元先說明如何公平比較人與機器：固定哪一種人、哪一個系統、哪一項任務，並用 Competency = f(K, S, A｜情境, 任務) 這條公式同時描述人與機器。接著介紹十一個評估構面、五級替代程度、多機協作的短板原則，以及六步驟分析流程。最後用汽車駕駛、純知識傳授的教師與 1 歲幼兒保母三個案例實際操作，並討論學生應如何面對未來工作被替代的挑戰。完成本單元後，您應能拆解任何一份工作，判斷其中哪些任務可能被替代、為什麼，以及人在其中的新角色。本單元共有七個學習模組與四個互動實驗，適合大學部各科系學生，不需要程式設計背景。",
+  "m0_why": "為什麼要學這個分析方法？",
+  "m0_why_desc": "新聞常給出「某某職業會消失」或「某某職業很安全」的清單，但機器的能力每年都在進步，清單很快就會過時。真正有用的是一套能自己重複使用的分析方法：拆解任務、指明情境、評估構面、找出短板。這套方法也提醒我們，被替代的風險從求學階段就開始了。",
+  "m0_modules": [
+   {
+    "num": "01",
+    "title": "比較起點：人與機器怎麼比",
+    "desc": "比較單位、條件句與構成要素對應"
+   },
+   {
+    "num": "02",
+    "title": "分析架構：任務 × 情境與十一構面",
+    "desc": "替代單位與評估構面"
+   },
+   {
+    "num": "03",
+    "title": "替代程度、多機協作與分析流程",
+    "desc": "五級替代、短板原則與六步驟"
+   },
+   {
+    "num": "04",
+    "title": "案例一：汽車駕駛",
+    "desc": "運行設計範圍與責任移轉"
+   },
+   {
+    "num": "05",
+    "title": "案例二：教師（純知識傳授）",
+    "desc": "傳授可替代，教練與認證仍需人"
+   },
+   {
+    "num": "06",
+    "title": "案例三：1 歲幼兒保母",
+    "desc": "多機組合與人力減量"
+   },
+   {
+    "num": "07",
+    "title": "教育意涵",
+    "desc": "讓學生理解未來工作被替代的挑戰"
+   }
+  ],
+  "m0_stats": [
+   {
+    "val": "7",
+    "label": "學習模組"
+   },
+   {
+    "val": "11",
+    "label": "評估構面"
+   },
+   {
+    "val": "5",
+    "label": "替代程度"
+   },
+   {
+    "val": "3",
+    "label": "職業案例"
+   }
+  ],
+  "m0_start": "開始學習 →",
+  "m0_formula_note": "同一條公式描述人與機器",
+  "mlab_nav": "8. 互動實驗室",
+  "mlab_title": "互動實驗室",
+  "mlab_desc": "用四個練習把分析方法用在具體情境：分析一個角色的替代性、判斷替代等級、分辨責任歸屬，以及為幼兒照顧設計多機組合。",
+  "mlab_labs": [
+   {
+    "title": "實驗一：替代性分析器",
+    "desc": "選一個角色，為每項任務判斷替代等級並標示關鍵任務，看看結果是人力減量還是角色消失。"
+   },
+   {
+    "title": "實驗二：替代程度分級",
+    "desc": "判斷每個情境屬於替代程度 0 到 4 的哪一級。"
+   },
+   {
+    "title": "實驗三：責任歸屬判斷",
+    "desc": "分辨哪些是可以寫入機器的負責任行為，哪些責任必須由組織或個人承擔。"
+   },
+   {
+    "title": "實驗四：多機協作設計：1 歲幼兒保母",
+    "desc": "為每項照顧任務配對機器，找出必須留人的短板任務。"
+   }
+  ],
+  "lab_check": "檢查答案",
+  "lab_reset": "重設",
+  "lab_score": "答對 {c} / {n}",
+  "mres_nav": "9. 外部學習資源",
+  "mres_title": "外部學習資源",
+  "mres_desc": "以下為本單元引用的主要原始文獻、標準與現況資料；學術文獻以英文期刊為主，產業與新聞資料具時效性。",
+  "mres_groups": [
+   {
+    "title": "任務與自動化",
+    "links": [
+     {
+      "label": "Autor, Levy 與 Murnane（2003）",
+      "url": "https://doi.org/10.1162/003355303322552801",
+      "desc": "電腦替代例行任務、互補非例行任務"
+     },
+     {
+      "label": "Frey 與 Osborne（2017）",
+      "url": "https://doi.org/10.1016/j.techfore.2016.08.019",
+      "desc": "702 個職業的電腦化機率與三個瓶頸"
+     },
+     {
+      "label": "Acemoglu 與 Restrepo（2019）",
+      "url": "https://doi.org/10.1257/jep.33.2.3",
+      "desc": "自動化的取代效果與新任務的恢復效果"
+     }
+    ]
+   },
+   {
+    "title": "機器學習的特性",
+    "links": [
+     {
+      "label": "Kirkpatrick et al.（2017）",
+      "url": "https://doi.org/10.1073/pnas.1611835114",
+      "desc": "神經網路的災難性遺忘"
+     },
+     {
+      "label": "Bourtoule et al.（2021）",
+      "url": "https://doi.org/10.1109/SP40001.2021.00019",
+      "desc": "機器遺忘：從模型中刪除資料的困難"
+     },
+     {
+      "label": "Tomlinson et al.（2024）",
+      "url": "https://doi.org/10.1038/s41598-024-54271-x",
+      "desc": "寫作與繪圖任務中 AI 與人類的排放比較"
+     }
+    ]
+   },
+   {
+    "title": "教學與幼兒發展",
+    "links": [
+     {
+      "label": "Kestin et al.（2025）",
+      "url": "https://doi.org/10.1038/s41598-025-97652-6",
+      "desc": "依教學原則設計的 AI 家教勝過主動學習課堂"
+     },
+     {
+      "label": "Bastani et al.（2025）",
+      "url": "https://doi.org/10.1073/pnas.2422633122",
+      "desc": "沒有防護的生成式 AI 可能傷害學習"
+     },
+     {
+      "label": "Reich 與 Ruipérez-Valiente（2019）",
+      "url": "https://doi.org/10.1126/science.aav7958",
+      "desc": "MOOC 完成率長期偏低"
+     },
+     {
+      "label": "Kuhl, Tsao 與 Liu（2003）",
+      "url": "https://doi.org/10.1073/pnas.1532872100",
+      "desc": "嬰兒從真人互動學會外語語音，錄影則無效"
+     }
+    ]
+   },
+   {
+    "title": "自動駕駛現況（具時效性）",
+    "links": [
+     {
+      "label": "SAE J3016 分級標準",
+      "url": "https://www.sae.org/standards/content/j3016_202104/",
+      "desc": "駕駛自動化 0 到 5 級的定義（2026 年 9 月已發布修訂版）"
+     },
+     {
+      "label": "Mercedes Level 3 責任聲明",
+      "url": "https://iotworldtoday.com/2022/03/28/mercedes-to-be-responsible-for-crashes-involving-drive-pilot-system",
+      "desc": "系統啟動時事故由製造商負責"
+     },
+     {
+      "label": "Waymo 擴展至 14 座城市",
+      "url": "https://www.bloomberg.com/news/articles/2026-09-01/waymo-expands-paid-robotaxi-rides-to-denver-san-diego-and-tampa",
+      "desc": "2026 年 9 月付費無人計程車服務"
+     }
+    ]
+   }
+  ],
+  "mana_nav": "10. 學習歷程分析",
+  "date": "Version 2026.11.27",
+  "copyright": "For Educational Use Only",
+  "architect_label": "Architect:",
+  "architect_name": "Prof. Shihmin Lo",
+  "architect_url": "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo",
+  "m1_nav": "1. 比較起點",
+  "m1_title": "比較起點：人與機器怎麼比",
+  "m1_overview": "比較人與機器之前，要先固定哪一種人、哪一個系統、哪一項任務。本模組說明公平比較的原則，把常見說法改寫成條件句，並用 KSA 公式把人與機器放在同一個架構中。",
+  "m1_highlights": [
+   "比較單位",
+   "條件句",
+   "Competency = f(K, S, A｜情境, 任務)",
+   "構成要素對應",
+   "承擔責任",
+   "可驗證性"
+  ],
+  "m1_wrapup": "公平比較人與機器的關鍵，是把比較單位講清楚，並把結論寫成條件句。用同一條 KSA 公式描述人與機器，可以看出知識、技能與基礎能力最容易比較，態度與動機較難，而承擔責任根本無法寫入機器。這些區分是後續所有替代性分析的基礎：先講清楚比的是什麼，結論才有意義。",
+  "m1_p1": "比較人與機器時，最常見的錯誤是挑選有利的對照：說機器較強時拿表現最差的人來比，說人類較強時又拿專家來比。公平的比較必須先固定哪一種人、哪一個系統，以及哪一項任務與衡量指標。很多說法因此只能寫成條件句，例如「人類樣本效率較高」只在以每個樣本計算時成立；若以同一任務的總排放計算，有研究估算 AI 每頁文字的排放比人類低 130 到 1,500 倍（Tomlinson et al., 2024）。",
+  "m1_p2": "脫離情境與任務的「機器比人強」或「人比機器強」，都沒有確定的意義。",
+  "m1_p3": "用 Competency = f(K, S, A｜情境, 任務) 描述機器時，知識對應模型權重中的知識與外部檢索資料，技能對應學到的程序、工具使用與動作控制，基礎能力對應模型架構、參數規模與感測器規格，三者的可比擬性都高。態度對應透過規則或訓練形成的行為傾向，可比擬性中等；動機則由指令或目標函數給定，可比擬性低。",
+  "m1_p4": "責任要分成兩件事：「負責任的行為」（守法、安全優先、遇到不確定就停下）可以寫入規則與訓練；「承擔責任」（出事時由誰賠償、受罰）則只能由法律與契約分配給人或組織。態度也一樣，重點不是機器是否真的有態度，而是它的行為傾向能否在新情境中被驗證。機器還有一項人類沒有的特性：可以整套更換成新版本，但每次更換都需要重新驗證。",
+  "m1_terms": [
+   {
+    "front": "比較單位",
+    "back": "比較人與機器前要固定：哪一種人、哪一個系統、哪一項任務與指標"
+   },
+   {
+    "front": "條件句",
+    "back": "把「機器較強」寫成「在某種計量方式與任務下較強」"
+   },
+   {
+    "front": "機器的基礎能力",
+    "back": "模型架構、參數規模、上下文長度、感測器與機構規格"
+   },
+   {
+    "front": "負責任的行為",
+    "back": "守法、安全優先、遇到不確定就停下，可寫入規則與訓練"
+   },
+   {
+    "front": "承擔責任",
+    "back": "出事時由誰賠償、受罰；只能由法律與契約分配給人或組織"
+   },
+   {
+    "front": "可驗證性",
+    "back": "機器的行為傾向能否在各種新情境中被檢驗"
+   }
+  ],
+  "m1_q": [
+   {
+    "q": "下列哪一項不屬於比較人與機器前要先固定的事？",
+    "opts": [
+     "要比較哪一種人",
+     "要比較哪一個系統與版本",
+     "要比較哪一項任務與指標",
+     "要比較哪一家公司的股價"
+    ],
+    "ans": _A3,
+    "exp": "比較單位是人、系統與任務；股價與能力比較無關。"
+   },
+   {
+    "q": "「人類樣本效率較高」這個說法，在什麼條件下成立？",
+    "opts": [
+     "以每個樣本計算學習量時",
+     "以總累積經驗計算時",
+     "比較同一任務的總排放時",
+     "比較硬體升級速度時"
+    ],
+    "ans": _A0,
+    "exp": "以每個樣本計算時成立；以總經驗計算可能翻轉。"
+   },
+   {
+    "q": "用 KSA 公式描述機器時，可比擬性最低的是哪一項？",
+    "opts": [
+     "知識",
+     "技能",
+     "動機",
+     "基礎能力"
+    ],
+    "ans": _A2,
+    "exp": "機器的目標由指令或目標函數給定，沒有內在動機。"
+   },
+   {
+    "q": "下列哪一項屬於「承擔責任」，而不是「負責任的行為」？",
+    "opts": [
+     "遇到不確定時安全停車",
+     "優先遵守交通規則",
+     "事故發生後由誰賠償",
+     "拒絕執行危險的指令"
+    ],
+    "ans": _A2,
+    "exp": "賠償與受罰只能由法律與契約分配，無法寫入機器。"
+   },
+   {
+    "q": "評估機器的「態度」時，重點是什麼？",
+    "opts": [
+     "機器是否真的具有人類般的情感",
+     "行為傾向能否在新情境中被驗證",
+     "機器的外型是否友善",
+     "開發者的個人價值觀"
+    ],
+    "ans": _A1,
+    "exp": "替代性分析看的是可驗證的行為傾向。"
+   },
+   {
+    "q": "機器可以整套更換成新版本，這項特性帶來的限制是什麼？",
+    "opts": [
+     "新版本的表現一定比舊版本還差",
+     "每次更換都需要重新驗證",
+     "更換後就不需要人監督",
+     "更換只能每十年一次"
+    ],
+    "ans": _A1,
+    "exp": "運作範圍或系統改變時，原有評估不能直接沿用。"
+   }
+  ],
+  "m2_nav": "2. 分析架構",
+  "m2_title": "分析架構：任務 × 情境與十一構面",
+  "m2_overview": "替代的單位是任務與情境，不是整個職業。本模組介紹任務導向的自動化研究，並提出十一個評估構面，用來判斷一項任務在特定情境中被機器替代的可能性。",
+  "m2_highlights": [
+   "任務 × 情境",
+   "例行任務",
+   "自動化瓶頸",
+   "十一構面",
+   "取代效果",
+   "恢復效果"
+  ],
+  "m2_wrapup": "把職業拆成任務，再指明每項任務所處的情境，是替代性分析的第一步。十一個構面從技術、社會與風險、經濟與系統三方面提供判斷依據，但它們不是固定答案：機器進步會移動邊界，新任務也會不斷出現。評估時要記錄日期，並定期重新檢視。",
+  "m2_p1": "一份職業是由多項任務組成的。Autor、Levy 與 Murnane（2003）發現，電腦替代的是能依明確規則完成的例行任務，並與非例行的問題解決及複雜溝通互補；而且同一職業內部的任務變化，就占整體影響的將近一半。換句話說，職業名稱可能不變，但工作內容已經改變。",
+  "m2_p2": "替代的單位是「任務 × 情境」，不是職業。",
+  "m2_p3": "Frey 與 Osborne（2017）提出自動化的三個瓶頸：感知與操作、創意智能、社交智能。生成式 AI 出現後，後兩項已部分鬆動，因此本單元改用十一個構面：技術面包括任務可規格化、情境封閉度、資料與回饋、實體操作；社會與風險面包括社交互動與信任、錯誤代價、責任可歸屬；經濟與系統面包括經濟性、任務可拆解性、整合協調成本、情境可改造性。",
+  "m2_p4": "Acemoglu 與 Restrepo（2019）提醒，自動化會讓機器取代原本由人執行的任務，稱為取代效果；但新任務的出現會讓勞動重新受到需求，稱為恢復效果。因此分析時不只要看哪些任務會被取代，也要看哪些新任務會出現。所有構面也都會隨機器進步而移動，評估結果有時效性。",
+  "m2_terms": [
+   {
+    "front": "例行任務",
+    "back": "能依明確規則完成的認知或手動任務，最早被電腦替代"
+   },
+   {
+    "front": "自動化瓶頸",
+    "back": "感知與操作、創意智能、社交智能（Frey & Osborne, 2017）"
+   },
+   {
+    "front": "取代效果",
+    "back": "機器接手原本由人執行的任務，使勞動需求下降"
+   },
+   {
+    "front": "恢復效果",
+    "back": "新任務出現，讓勞動重新受到需求"
+   },
+   {
+    "front": "情境封閉度",
+    "back": "運作範圍能否明確界定、變異是否小"
+   },
+   {
+    "front": "情境可改造性",
+    "back": "能否改造環境來配合機器，例如鋪設清楚的道路標線"
+   }
+  ],
+  "m2_q": [
+   {
+    "q": "依任務導向的觀點，替代性分析的基本單位是什麼？",
+    "opts": [
+     "整個職業類別",
+     "任務 × 情境",
+     "企業的產業別",
+     "員工的學歷"
+    ],
+    "ans": _A1,
+    "exp": "替代發生在任務與情境的層次，不是整個職業。"
+   },
+   {
+    "q": "Autor 等人（2003）發現電腦最先替代哪一類任務？",
+    "opts": [
+     "需要說服他人、反覆協商的談判任務",
+     "能依明確規則完成的例行任務",
+     "需要原創構想的設計任務",
+     "在雜亂環境中的搬運任務"
+    ],
+    "ans": _A1,
+    "exp": "例行任務能寫成規則，因此最先被替代。"
+   },
+   {
+    "q": "生成式 AI 出現後，Frey 與 Osborne 的哪些瓶頸已部分鬆動？",
+    "opts": [
+     "感知、實體操作與靈巧的手部動作",
+     "創意智能與社交智能",
+     "資料儲存與傳輸",
+     "責任歸屬與保險"
+    ],
+    "ans": _A1,
+    "exp": "生成式 AI 能寫作、對話與創作，使這兩項瓶頸鬆動。"
+   },
+   {
+    "q": "「新任務出現，讓勞動重新受到需求」稱為什麼？",
+    "opts": [
+     "取代效果",
+     "恢復效果",
+     "短板效果",
+     "規模效果"
+    ],
+    "ans": _A1,
+    "exp": "Acemoglu 與 Restrepo（2019）稱之為恢復效果。"
+   },
+   {
+    "q": "下列哪一項屬於十一構面中的「社會與風險面」？",
+    "opts": [
+     "任務可規格化",
+     "錯誤代價",
+     "整合協調成本",
+     "資料與回饋"
+    ],
+    "ans": _A1,
+    "exp": "社會與風險面包括社交互動與信任、錯誤代價、責任可歸屬。"
+   },
+   {
+    "q": "為什麼替代性評估的結果要記錄日期？",
+    "opts": [
+     "方便計算學期成績",
+     "機器進步會移動替代邊界",
+     "法律規定必須註明",
+     "日期會影響十一構面的名稱"
+    ],
+    "ans": _A1,
+    "exp": "所有構面都會隨機器進步而改變，結果有時效性。"
+   }
+  ],
+  "m3_nav": "3. 程度與流程",
+  "m3_title": "替代程度、多機協作與分析流程",
+  "m3_overview": "替代不是全有或全無。本模組介紹五級替代程度、多台機器組合完成一個角色時的短板原則，以及從界定角色到規劃新角色的六步驟分析流程。",
+  "m3_highlights": [
+   "五級替代程度",
+   "範圍內替代",
+   "多機協作",
+   "短板原則",
+   "人力減量",
+   "六步驟流程"
+  ],
+  "m3_wrapup": "五級替代程度讓我們能精確描述人與機器的分工，而不是只說「會不會被取代」。多機協作提醒我們：整個角色需要多少人，取決於最難替代的那項關鍵任務，也就是短板。六步驟流程把這些概念串成可重複使用的方法，而且必須隨機器更新定期重做。",
+  "m3_p1": "借用汽車自動駕駛的分級邏輯，替代程度可分為五級：0 人類執行；1 機器輔助，人類決策與執行；2 監督下執行，機器執行而人類全程監督、隨時接手；3 範圍內替代，在界定的範圍內由機器執行，超出範圍時交回人類或安全停止；4 全面替代，在人類能執行的所有情境中都由機器執行。",
+  "m3_p2": "只要有一項關鍵任務無法由機器安全完成，就必須保留人力。",
+  "m3_p3": "替代不必由一台萬能機器完成。一個角色可以拆成多項任務，分別交給專長不同的機器，再整合成一套系統。這時要問三個問題：每項任務都有機器能做嗎？機器之間能否整合，出事由誰負責？能不能改造情境來配合機器？結果要區分兩種：人力減量，即一個人搭配機器負責更多對象；以及角色消失。",
+  "m3_p4": "分析流程有六個步驟：1 界定角色與情境；2 拆解任務，標示關鍵任務；3 為每項任務配對機器，比較人與機器的構成要素；4 以十一構面評分；5 判定替代程度並找出短板；6 規劃人的新角色，例如監督、例外處理、整合與承擔責任。機器更新或情境改變時，要回到步驟 1 重新評估。",
+  "m3_terms": [
+   {
+    "front": "範圍內替代",
+    "back": "第 3 級：界定範圍內由機器執行，超出範圍交回人類或安全停止"
+   },
+   {
+    "front": "監督下執行",
+    "back": "第 2 級：機器執行，人類全程監督、隨時接手"
+   },
+   {
+    "front": "短板原則",
+    "back": "任一關鍵任務無法由機器安全完成，就必須保留人力"
+   },
+   {
+    "front": "人力減量",
+    "back": "一個人搭配機器負責更多對象，角色仍在"
+   },
+   {
+    "front": "整合協調成本",
+    "back": "多台機器之間交接、協調與出事時責任釐清的成本"
+   },
+   {
+    "front": "六步驟流程",
+    "back": "界定、拆解、配對、評分、判定、規劃新角色，並定期重評"
+   }
+  ],
+  "m3_q": [
+   {
+    "q": "「機器執行，人類全程監督、隨時接手」屬於第幾級？",
+    "opts": [
+     "第 1 級",
+     "第 2 級",
+     "第 3 級",
+     "第 4 級"
+    ],
+    "ans": _A1,
+    "exp": "第 2 級是監督下執行。"
+   },
+   {
+    "q": "第 3 級「範圍內替代」超出範圍時，系統應該怎麼做？",
+    "opts": [
+     "繼續執行並忽略風險",
+     "交回人類或安全停止",
+     "自動擴大運作範圍",
+     "通知製造商遠端改寫程式"
+    ],
+    "ans": _A1,
+    "exp": "超出界定範圍時交回人類或安全停止。"
+   },
+   {
+    "q": "依短板原則，一個角色最少需要多少人力取決於什麼？",
+    "opts": [
+     "最容易替代的任務",
+     "最難替代的關鍵任務",
+     "所有任務的平均分數",
+     "機器的購買價格"
+    ],
+    "ans": _A1,
+    "exp": "任一關鍵任務無法安全替代，就必須留人。"
+   },
+   {
+    "q": "多機協作的結果是「一個人搭配機器負責更多對象」，這稱為什麼？",
+    "opts": [
+     "角色消失",
+     "人力減量",
+     "全面替代",
+     "取代效果"
+    ],
+    "ans": _A1,
+    "exp": "角色仍在，但需要的人數減少。"
+   },
+   {
+    "q": "下列哪一項不是多機協作時要問的問題？",
+    "opts": [
+     "每項任務都有機器能做嗎",
+     "機器之間能否整合",
+     "能不能改造情境配合機器",
+     "機器的外觀是否符合流行"
+    ],
+    "ans": _A3,
+    "exp": "外觀與替代性無關。"
+   },
+   {
+    "q": "什麼時候要回到步驟 1 重新評估？",
+    "opts": [
+     "每完成一次分析就永遠不必再做",
+     "機器更新或情境改變時",
+     "只有在法律修改時",
+     "只有在員工離職時"
+    ],
+    "ans": _A1,
+    "exp": "替代邊界會移動，評估要定期重做。"
+   }
+  ],
+  "m4_nav": "4. 案例：駕駛",
+  "m4_title": "案例一：汽車駕駛",
+  "m4_overview": "汽車駕駛是單一整合系統替代人類任務的典型案例。本模組依六步驟分析職業駕駛，說明運行設計範圍、各項任務的替代程度，以及責任如何從駕駛人移轉到製造商。",
+  "m4_highlights": [
+   "SAE J3016",
+   "動態駕駛任務",
+   "運行設計範圍 ODD",
+   "第 3 級",
+   "責任移轉",
+   "無人計程車"
+  ],
+  "m4_wrapup": "駕駛案例顯示，替代程度取決於情境：在劃定範圍的城市道路上已進入範圍內替代，但鄉間道路、惡劣天候與最後一哩的搬運仍需要人。責任並沒有消失，而是從駕駛人移轉到製造商或營運商。擴大運作範圍時，每一次都要重新驗證，這也說明替代邊界雖然會移動，但速度受到驗證成本限制。",
+  "m4_p1": "SAE J3016 把駕駛自動化定義為持續執行部分或全部「動態駕駛任務」的系統，並依人類駕駛與系統各自的角色分為 0 到 5 級（SAE International, 2026）。第 3 級指系統在限定條件下駕駛，發出警示或明顯故障時需要人類接手。這個「限定條件」稱為運行設計範圍（ODD），也就是公式中的「情境」。",
+  "m4_p2": "職業駕駛不會整個被替代；被替代的是特定運行設計範圍內的駕駛任務。",
+  "m4_p3": "拆解職業駕駛的任務：感知與反應、車輛操控、交通規則與路線，在運行設計範圍內機器表現較強，因為它能 360 度感測、不會疲勞、反應快。防禦性駕駛可以寫入規則，但邊緣情境仍待驗證。超出範圍時的處置、搬運貨物、送貨進門與乘客服務，則仍是機器的弱項。",
+  "m4_p4": "責任方面，Mercedes-Benz 表示其第 3 級系統啟動時的事故由公司負責，系統關閉時由車主負責；駕駛若未依要求接手則不在此限。責任是從駕駛人移轉到製造商，而非移轉到機器。現況上，Waymo 在 2026 年 9 月已把付費無人計程車擴展到美國 14 座城市，每進入新城市前都先試營運約兩個月。人的角色則轉向遠端監督、例外處理、實體操作、客戶服務與承擔責任。",
+  "m4_terms": [
+   {
+    "front": "動態駕駛任務",
+    "back": "駕駛時所有即時的操作與戰術功能，例如轉向、加減速與偵測"
+   },
+   {
+    "front": "運行設計範圍",
+    "back": "系統被設計可安全運作的條件，例如地區、天候、時段"
+   },
+   {
+    "front": "第 3 級自動駕駛",
+    "back": "限定條件下由系統駕駛，警示或故障時須由人類接手"
+   },
+   {
+    "front": "責任移轉",
+    "back": "第 3 級啟動時，事故責任由駕駛人移轉到製造商"
+   },
+   {
+    "front": "新城市試營運",
+    "back": "擴大運作範圍前，先以員工試營運驗證約兩個月"
+   },
+   {
+    "front": "駕駛的新角色",
+    "back": "遠端監督、例外處理、實體操作、客戶服務與承擔責任"
+   }
+  ],
+  "m4_q": [
+   {
+    "q": "在駕駛案例中，公式裡的「情境」對應到什麼？",
+    "opts": [
+     "車輛的品牌",
+     "運行設計範圍",
+     "駕駛人的年資",
+     "道路的收費標準"
+    ],
+    "ans": _A1,
+    "exp": "運行設計範圍界定系統能安全運作的條件。"
+   },
+   {
+    "q": "下列哪一項是機器在運行設計範圍內較強的任務？",
+    "opts": [
+     "送貨進門與搬運貨物",
+     "處理乘客之間的糾紛",
+     "感知路況與即時反應",
+     "超出範圍時的臨場判斷"
+    ],
+    "ans": _A2,
+    "exp": "360 度感測、不疲勞、反應快，使感知與反應較強。"
+   },
+   {
+    "q": "Mercedes-Benz 的第 3 級責任聲明，顯示責任移轉到了哪裡？",
+    "opts": [
+     "機器本身",
+     "製造商",
+     "保險經紀人",
+     "交通警察"
+    ],
+    "ans": _A1,
+    "exp": "責任從駕駛人移轉到製造商，而非機器。"
+   },
+   {
+    "q": "第 3 級系統發出接手請求後，駕駛未接手而發生事故，責任通常如何？",
+    "opts": [
+     "一律由製造商負責，因為系統曾經啟動",
+     "駕駛未盡注意義務，由駕駛負責",
+     "由路過的其他車輛負責",
+     "因為是機器駕駛所以無人負責"
+    ],
+    "ans": _A1,
+    "exp": "製造商的承諾附有條件：駕駛須依要求接手。"
+   },
+   {
+    "q": "Waymo 進入新城市前先試營運約兩個月，說明了什麼？",
+    "opts": [
+     "機器已經成熟，不需要任何額外測試",
+     "擴大運作範圍需要重新驗證",
+     "新城市不允許無人車",
+     "乘客需要兩個月學會搭車"
+    ],
+    "ans": _A1,
+    "exp": "運作範圍改變時，原有評估不能直接沿用。"
+   },
+   {
+    "q": "下列哪一個情境目前的替代性最低？",
+    "opts": [
+     "劃定範圍內的城市計程車",
+     "高速公路上的幹線貨運",
+     "大雪中的鄉間道路駕駛",
+     "固定路線的園區接駁"
+    ],
+    "ans": _A2,
+    "exp": "情境開放、變異大，機器最難應付。"
+   }
+  ],
+  "m5_nav": "5. 案例：教師",
+  "m5_title": "案例二：教師（純知識傳授）",
+  "m5_overview": "本模組刻意把教師限定為純知識傳授者，不含教練與照顧的功能。分析顯示傳授本身的替代性很高，但實證研究指出，學習成效取決於傳授之外的教練功能。",
+  "m5_highlights": [
+   "純知識傳授者",
+   "AI 家教",
+   "防護設計",
+   "AI 拐杖效應",
+   "MOOC 完成率",
+   "把關與認證"
+  ],
+  "m5_wrapup": "純知識傳授是一個幾乎可以被替代的角色，但它一直不是教育價值的主要來源。這個案例的瓶頸和駕駛相反：不在技術，而在學習者本身的動機、自律與認知努力。AI 若只給答案，反而會讓學生失去練習的機會；能替代的是知識的傳遞，不能替代的是讓學生真正學會的歷程設計與對結果負責。",
+  "m5_p1": "拆解純知識傳授的任務：講解概念、回答提問、出題與批改知識性測驗，機器的表現都很強，替代性高；診斷迷思概念與更新學科內容屬中等；決定什麼值得教、為內容正確性與評分負責、總結性評量與學歷認證，則涉及價值判斷與責任，替代性低。與駕駛相比，傳授幾乎不需要實體操作、單次錯誤可補救、資料極為豐富，技術上的替代門檻更低。",
+  "m5_p2": "內容早就可以免費取得；學不會的原因在於動機、自律與回饋。",
+  "m5_p3": "實證結果符合「傳授可替代」：哈佛大學一項 194 人的隨機對照試驗中，依教學最佳實務設計的 AI 家教，讓學生在更短時間內學得更多（Kestin et al., 2025）。但另一項近千名高中生的實驗發現，使用一般 GPT-4 的組別練習時表現較好，拿掉 AI 後考試卻比對照組差 17%；加上不直接給答案等防護設計後，負面效果大致消失（Bastani et al., 2025）。所謂防護，正是教練的功能。",
+  "m5_p4": "歷史上，書本、廣播與大規模開放線上課程（MOOC）都曾被期待取代講授，但 MOOC 的完成率長期偏低（Reich & Ruipérez-Valiente, 2019）。替代程度因情境而異：自律的成人學習者可達範圍內替代；自律能力弱的初學者必須搭配教練與照顧；高風險的認證則仍在人類端。教師的角色會轉向學習設計者、教練與把關認證者。",
+  "m5_terms": [
+   {
+    "front": "純知識傳授者",
+    "back": "只負責傳遞內容，不含教練與照顧功能的教師角色"
+   },
+   {
+    "front": "AI 家教",
+    "back": "能依學生程度即時講解、回答與出題的 AI 系統"
+   },
+   {
+    "front": "防護設計",
+    "back": "例如不直接給答案、引導學生自己推理，屬於教練功能"
+   },
+   {
+    "front": "AI 拐杖效應",
+    "back": "依賴 AI 練習時表現好，拿掉 AI 後表現反而變差"
+   },
+   {
+    "front": "MOOC 完成率",
+    "back": "大規模開放線上課程完成率長期偏低，顯示內容不是瓶頸"
+   },
+   {
+    "front": "把關與認證",
+    "back": "查核 AI 內容正確性、承擔評量責任，仍屬人類"
+   }
+  ],
+  "m5_q": [
+   {
+    "q": "純知識傳授的哪一項任務替代性最低？",
+    "opts": [
+     "講解概念並舉出生活中的例子",
+     "回答學生提問",
+     "總結性評量與學歷認證",
+     "出題與批改測驗"
+    ],
+    "ans": _A2,
+    "exp": "認證涉及責任與制度正當性。"
+   },
+   {
+    "q": "為什麼純知識傳授的技術替代門檻比駕駛低？",
+    "opts": [
+     "教室裡完全沒有任何可能的風險",
+     "幾乎不需實體操作，錯誤可補救",
+     "教師的薪資比駕駛高",
+     "學生比乘客更容易滿意"
+    ],
+    "ans": _A1,
+    "exp": "沒有實體操作與人身安全的障礙。"
+   },
+   {
+    "q": "Bastani 等人（2025）發現，使用一般 GPT-4 練習的學生考試表現如何？",
+    "opts": [
+     "比對照組好 17%",
+     "比對照組差 17%",
+     "與對照組完全相同",
+     "無法參加考試"
+    ],
+    "ans": _A1,
+    "exp": "他們把 AI 當拐杖，拿掉後表現變差。"
+   },
+   {
+    "q": "Bastani 研究中能消除負面效果的「防護設計」，本質上屬於哪種功能？",
+    "opts": [
+     "保母的照顧功能",
+     "教練的引導功能",
+     "行政的管理功能",
+     "廣告的行銷功能"
+    ],
+    "ans": _A1,
+    "exp": "不直接給答案、引導學生推理，正是教練功能。"
+   },
+   {
+    "q": "MOOC 完成率長期偏低，最能說明什麼？",
+    "opts": [
+     "影片的畫質與音質都不夠好",
+     "內容不是學習的主要瓶頸",
+     "網路速度太慢",
+     "課程數量太少"
+    ],
+    "ans": _A1,
+    "exp": "內容早就可免費取得，瓶頸在動機、自律與回饋。"
+   },
+   {
+    "q": "在哪一種情境下，知識傳授的替代程度最高？",
+    "opts": [
+     "自律能力仍弱、需要大人陪伴的國小學童",
+     "自律且動機強的成人學習者",
+     "高風險的國家證照考試",
+     "內容快速變化的前沿領域"
+    ],
+    "ans": _A1,
+    "exp": "學習者本身具備動機與自律時，最不需要教練補位。"
+   }
+  ],
+  "m6_nav": "6. 案例：保母",
+  "m6_title": "案例三：1 歲幼兒保母",
+  "m6_overview": "1 歲幼兒正在牙牙學語、學爬學走，仍需要餵食、穿衣與陪睡。本模組示範多台機器如何分工接手照顧任務，並說明為什麼結果是人力減量，而不是角色消失。",
+  "m6_highlights": [
+   "學步兒 toddler",
+   "多機組合",
+   "身體照護",
+   "即時安全介入",
+   "回應式互動",
+   "人力減量"
+  ],
+  "m6_wrapup": "幼兒照顧顯示多機協作的威力與極限：後勤與監測可以分給多台機器，但最難替代的關鍵任務決定了必須留人。這個案例的瓶頸在身體與情感，錯誤代價高且不可逆。機器減少的是照顧者的雜務，而不是照顧本身；照顧者反而能把更多時間放在最需要人的地方。",
+  "m6_p1": "拆解 1 歲幼兒保母的任務：清潔與洗衣（掃地機器人、洗衣機）、與父母溝通及記錄（AI 摘要）的替代性高；睡眠監測（智慧監測器）中高；沖泡奶與備餐中等。安全看護雖有攝影機偵測與警示，卻無法即時伸手阻止跌倒或誤食；餵食、穿衣、換尿布、洗澡、陪睡與抱起安撫，都需要對脆弱身體做靈巧操作，目前沒有安全可用的機器。",
+  "m6_p2": "多機組合可以接手後勤與監測，但身體照護、即時安全介入與回應式互動仍需要人。",
+  "m6_p3": "情境（年齡）會改變替代範圍。獲美國食品藥物管理局核准的 SNOO 智慧搖籃能讓嬰兒維持仰睡，偵測到哭聲時自動以白噪音與搖動回應，但只適用於出生到六個月、尚不會翻身的嬰兒；到了 1 歲就不再適用。語言發展也需要真人：Kuhl、Tsao 與 Liu（2003）發現，9 個月大的嬰兒與真人互動能學會辨識中文語音，只看錄影或只聽錄音則完全沒有效果。",
+  "m6_p4": "依短板原則，即時安全介入、身體照護與回應式互動這三項關鍵任務仍需人類，因此結果是人力減量，而非角色消失。照顧者把時間從家務與監看，移到餵食、穿衣、陪睡與互動，並負責整合多台設備、在警示時即時處理。能即時回應的 AI 是否能促進幼兒的語言與社會發展，目前尚無足夠研究，不宜推論。",
+  "m6_terms": [
+   {
+    "front": "學步兒",
+    "back": "約 12 至 36 個月的幼兒，有別於 1 歲以下的嬰兒"
+   },
+   {
+    "front": "多機組合",
+    "back": "把一個角色的任務分給多台專長不同的機器"
+   },
+   {
+    "front": "即時安全介入",
+    "back": "在跌倒、誤食時立即伸手阻止；攝影機只能警示"
+   },
+   {
+    "front": "回應式互動",
+    "back": "依幼兒的聲音與表情即時回應，促進語言發展"
+   },
+   {
+    "front": "年齡改變運作範圍",
+    "back": "SNOO 只適用 6 個月以下，到 1 歲就不適用"
+   },
+   {
+    "front": "照顧者的新角色",
+    "back": "整合設備、處理警示，把時間移到身體照護與互動"
+   }
+  ],
+  "m6_q": [
+   {
+    "q": "1 歲幼兒保母的哪一項任務替代性最高？",
+    "opts": [
+     "抱起哭鬧的幼兒安撫",
+     "清潔與洗衣",
+     "防止幼兒攀爬跌落",
+     "回應幼兒的牙牙學語"
+    ],
+    "ans": _A1,
+    "exp": "掃地機器人與洗衣機已能接手。"
+   },
+   {
+    "q": "攝影機能偵測幼兒危險，為什麼安全看護的替代性仍低？",
+    "opts": [
+     "攝影機的畫質與夜視功能不夠清楚",
+     "只能警示，無法即時伸手阻止",
+     "幼兒不喜歡被拍攝",
+     "攝影機太昂貴"
+    ],
+    "ans": _A1,
+    "exp": "即時安全介入需要實體動作。"
+   },
+   {
+    "q": "SNOO 智慧搖籃的例子說明了什麼？",
+    "opts": [
+     "機器已能完全取代保母的所有工作",
+     "年齡會改變替代範圍",
+     "所有嬰兒用品都需核准",
+     "幼兒不需要睡眠監測"
+    ],
+    "ans": _A1,
+    "exp": "它只適用 6 個月以下，1 歲就不適用。"
+   },
+   {
+    "q": "Kuhl 等人（2003）的研究中，哪一種方式讓嬰兒學會辨識中文語音？",
+    "opts": [
+     "只看錄影",
+     "只聽錄音",
+     "與真人互動",
+     "閱讀圖畫書"
+    ],
+    "ans": _A2,
+    "exp": "錄影與錄音組完全沒有效果。"
+   },
+   {
+    "q": "依短板原則，幼兒照顧的替代結果是什麼？",
+    "opts": [
+     "角色完全消失",
+     "人力減量，角色仍在",
+     "全部改由攝影機負責",
+     "只需要遠端監看"
+    ],
+    "ans": _A1,
+    "exp": "三項關鍵任務仍需人，所以是人力減量。"
+   },
+   {
+    "q": "關於能即時回應的 AI 是否能促進幼兒語言發展，目前的證據如何？",
+    "opts": [
+     "已證實完全有效",
+     "已證實完全無效",
+     "研究不足，不宜推論",
+     "只對家中說兩種語言的家庭有效"
+    ],
+    "ans": _A2,
+    "exp": "目前沒有足夠研究，不能下結論。"
+   }
+  ],
+  "m7_nav": "7. 教育意涵",
+  "m7_title": "教育意涵：讓學生理解未來工作被替代的挑戰",
+  "m7_overview": "學生需要的不是一份「安全職業清單」，而是能自己重複使用的分析方法。本模組提出四個核心原則，並依國小到大學設計對應的學習活動。",
+  "m7_highlights": [
+   "用任務思考",
+   "教會分析方法",
+   "不恐嚇、不保證",
+   "AI 拐杖",
+   "分階段設計",
+   "定期重評"
+  ],
+  "m7_wrapup": "讓學生理解被替代的挑戰，重點不在預測哪些職業會消失，而在培養一套可以不斷重複使用的分析能力，並在求學過程中真正長出能力。從國小的家事觀察到大學的人機協作設計，每個階段都在練習同一件事：拆解任務、指明情境、判斷人與機器的分工，並找出人該承擔的新角色。",
+  "m7_p1": "四個核心原則：第一，用任務思考，問「這份工作有哪些任務會被機器做」，而不是「哪些職業會消失」。第二，不給安全清單，要教會分析方法，因為替代邊界持續移動，清單很快會過時。第三，既不恐嚇也不保證：舊任務會被取代，新任務也會出現（Acemoglu & Restrepo, 2019），重點是培養移動到新任務的能力。",
+  "m7_p2": "讓 AI 代寫作業，等於從一開始就沒有培養能力，未來最容易被替代。",
+  "m7_p3": "第四個原則是：被替代的風險從求學階段就開始。把 AI 當拐杖的學生，拿掉 AI 後表現反而更差（Bastani et al., 2025）。在國小階段，可以讓學生列出家事，找出哪些已由機器完成，再分組「幫保母設計機器人團隊」，自己發現機器做不到的事。國中階段可以訪問家長的職業，把工作拆成「機器做、機器幫忙、需要人」三類，並做 AI 拐杖實驗。",
+  "m7_p4": "高中階段可結合生涯規劃與自主學習，選一個目標職業，列出任務並用十一構面評分，推想 2035 年的情境。大學階段則以自己的科系為例，例如國際企業的貿易文件、市場研究、翻譯與談判，設計人機協作流程，找出自己要發展的構成要素與要承擔的責任。要避免的錯誤包括：用恐嚇代替理解、提供安全清單、只談職業名稱，以及忽略責任與新任務。",
+  "m7_terms": [
+   {
+    "front": "用任務思考",
+    "back": "問「哪些任務會被機器做」，而不是「哪些職業會消失」"
+   },
+   {
+    "front": "分析方法而非清單",
+    "back": "替代邊界會移動，清單會過時，方法可重複使用"
+   },
+   {
+    "front": "新任務",
+    "back": "自動化同時創造人類具有相對優勢的新任務"
+   },
+   {
+    "front": "AI 拐杖",
+    "back": "依賴 AI 完成作業，能力沒有長出來"
+   },
+   {
+    "front": "定期重評",
+    "back": "隨機器進步，定期重新分析自己的目標職業"
+   },
+   {
+    "front": "人機協作設計",
+    "back": "安排人與機器各自負責的任務與交接方式"
+   }
+  ],
+  "m7_q": [
+   {
+    "q": "為什麼不建議給學生一份「不會被取代的職業清單」？",
+    "opts": [
+     "清單太長，學生不容易記住",
+     "邊界會移動，清單很快過時",
+     "學生不喜歡清單",
+     "清單會侵犯著作權"
+    ],
+    "ans": _A1,
+    "exp": "要教的是能重複使用的分析方法。"
+   },
+   {
+    "q": "「既不恐嚇也不保證」的依據是什麼？",
+    "opts": [
+     "機器的能力永遠不會再進步",
+     "舊任務被取代，新任務也會出現",
+     "所有工作都一定會消失",
+     "政府會保障所有工作"
+    ],
+    "ans": _A1,
+    "exp": "取代效果與恢復效果同時存在。"
+   },
+   {
+    "q": "為什麼說被替代的風險從求學階段就開始？",
+    "opts": [
+     "學校本身將來會被機器人完全取代",
+     "依賴 AI 作業，能力沒有長出來",
+     "學生太早選擇職業",
+     "課本內容太舊"
+    ],
+    "ans": _A1,
+    "exp": "把 AI 當拐杖，拿掉後表現反而更差。"
+   },
+   {
+    "q": "國小階段最適合哪一種活動？",
+    "opts": [
+     "用十一構面為目標職業評分",
+     "找出家事中哪些已由機器完成",
+     "設計國際企業的人機協作流程",
+     "推想 2035 年的勞動市場"
+    ],
+    "ans": _A1,
+    "exp": "從生活中具體可見的機器開始，建立任務的概念。"
+   },
+   {
+    "q": "大學階段的活動重點是什麼？",
+    "opts": [
+     "背誦未來會被替代的所有職業名稱",
+     "以本科系工作設計人機協作流程",
+     "避免使用任何 AI 工具",
+     "只學習程式設計"
+    ],
+    "ans": _A1,
+    "exp": "找出自己要發展的構成要素與要承擔的責任。"
+   },
+   {
+    "q": "下列哪一項是教學上要避免的錯誤？",
+    "opts": [
+     "用任務拆解工作並逐項判斷",
+     "定期重新評估",
+     "只談職業名稱",
+     "討論新任務的出現"
+    ],
+    "ans": _A2,
+    "exp": "替代發生在任務層次，只談職業名稱會誤導。"
+   }
+  ]
+ },
+ "en": {
+  "brand": "HMS",
+  "title": "How AI Agents and Robots Substitute Human Work",
+  "subtitle": "A systematic analysis of driving, teaching and toddler care",
+  "nav_modules": "Modules",
+  "nav_prev": "← Previous",
+  "nav_next": "Next →",
+  "nav_home": "Home",
+  "key_terms": "Key Terms",
+  "flip_prompt": "Click to flip",
+  "flip_status": "Read {read} / Shown {shown} / Total {total}",
+  "flip_next": "Next",
+  "flip_retry": "Restart",
+  "audio_read": "Audio guide",
+  "audio_stop": "Stop",
+  "quiz_title": "Module Knowledge Check",
+  "quiz_status": "Correct {correct} / Answered {answered} / Total {total}",
+  "quiz_next": "Next",
+  "quiz_retry": "Retry",
+  "submit": "Submit",
+  "score": "Score",
+  "correct": "Correct",
+  "incorrect": "Incorrect",
+  "explanation": "Explanation",
+  "colon": ": ",
+  "overview_label": "Overview",
+  "highlights_label": "Highlights",
+  "deep_dive_label": "Deep Dive",
+  "figure_label": "Figure",
+  "wrapup_label": "Wrap-up",
+  "toast_copyright": "Intellectual Property of Prof. Shihmin Lo",
+  "analytics_title": "Learning Analytics",
+  "analytics_desc": "Review your time on each module, clicks, flashcard use and quiz results, find the modules to revisit, and export your learning record.",
+  "analytics_form_title": "Your details (required before export)",
+  "analytics_group": "Group",
+  "analytics_group_select": "Select",
+  "analytics_dept": "Department and year",
+  "analytics_dept_ph": "e.g. IBS3",
+  "analytics_id": "Student ID",
+  "analytics_id_ph": "e.g. 113212599",
+  "analytics_name_en": "English name",
+  "analytics_name_en_ph": "e.g. Shihmin Lo",
+  "analytics_name_zh": "Chinese name",
+  "analytics_name_zh_ph": "e.g. 王阿吉",
+  "csv_title": "and Human Work Substitution",
+  "csv_headers": [
+   "Group",
+   "Department",
+   "Student ID",
+   "Name (EN)",
+   "Name (ZH)",
+   "Module",
+   "Time (s)",
+   "Clicks",
+   "Visited",
+   "Quiz Correct",
+   "Quiz Answered",
+   "Quiz Total",
+   "Accuracy (%)",
+   "Cards Read",
+   "Cards Total",
+   "Wrong Questions"
+  ],
+  "csv_yes": "Y",
+  "csv_no": "N",
+  "csv_sep": " | ",
+  "analytics_export_csv": "Export CSV record",
+  "analytics_fill_required": "Complete all fields to unlock export",
+  "analytics_refresh_prompt": "This page has been updated. Refresh saved records?",
+  "analytics_total_time": "Total time",
+  "analytics_total_clicks": "Total clicks",
+  "analytics_overall_acc": "Overall quiz accuracy",
+  "analytics_card_usage": "Flashcard usage",
+  "analytics_module": "Module",
+  "analytics_time": "Time",
+  "analytics_clicks": "Clicks",
+  "analytics_acc": "Accuracy",
+  "analytics_correct_ans_total": "Correct / Answered / Total",
+  "analytics_cards_read_total": "Read / Total",
+  "analytics_no_data": "Not taken",
+  "analytics_sec": "s",
+  "analytics_times": " times",
+  "analytics_progress_title": "Overall progress",
+  "analytics_progress_visited": "Visited",
+  "analytics_progress_not_visited": "Not visited",
+  "analytics_progress_quiz_done": "Quiz done",
+  "analytics_wp_title": "Weak points and review suggestions",
+  "analytics_wp_incorrect": "Questions answered incorrectly:",
+  "analytics_wp_goto": "→ Review this module",
+  "analytics_wp_allpass": "All completed modules are at 75% or above. Well done!",
+  "analytics_wp_none": "Complete a module quiz to see review suggestions here.",
+  "analytics_wp_saved": "💾 Your record is saved automatically in this browser",
+  "analytics_wp_clear": "🗑 Clear record",
+  "analytics_wp_clear_confirm": "Clear all learning records? This cannot be undone.",
+  "analytics_wp_tts_intro": "Here is your weak-point analysis.",
+  "analytics_wp_tts_module": "Module {name}: {acc}% correct. Review recommended.",
+  "analytics_wp_tts_allpass": "Congratulations! All completed modules are at 75% or above.",
+  "analytics_detail_title": "Module details",
+  "group_options": [
+   "G1",
+   "G2",
+   "G3",
+   "G4",
+   "G5",
+   "G6",
+   "G7",
+   "G8",
+   "G9",
+   "G10",
+   "G11",
+   "G12",
+   "Others"
+  ],
+  "m0_nav": "0. Executive Summary",
+  "m0_title": "Executive Summary",
+  "m0_intro": "AI agents and physical robots are taking over more and more work that people used to do, but asking which jobs will disappear is the wrong question. Jobs are bundles of tasks, and substitution happens at the level of task × context, not whole occupations. This unit first shows how to compare humans and machines fairly, by fixing which human, which system and which task, and uses one formula, Competency = f(K, S, A | context, task), to describe both. It then introduces eleven evaluation dimensions, five levels of substitution, the weakest-link rule for multi-machine systems and a six-step analysis process. Three cases put the method to work: driving, a teacher who only transmits knowledge, and a caregiver for a one-year-old. Finally, it discusses how students can prepare for future substitution. By the end you should be able to break down any job, judge which of its tasks could be substituted and why, and identify the new roles left for people. The unit has seven learning modules and four interactive labs, suits undergraduates from any department, and needs no programming background.",
+  "m0_why": "Why learn this method?",
+  "m0_why_desc": "The news is full of lists of jobs that will vanish or jobs that are safe, but machines improve every year and such lists soon go out of date. What lasts is a method you can reuse yourself: break the job into tasks, state the context, score the dimensions and find the weakest link. The method also shows that the risk of being substituted starts while you are still a student.",
+  "m0_modules": [
+   {
+    "num": "01",
+    "title": "Comparing humans and machines",
+    "desc": "Units of comparison, conditional claims and mapping"
+   },
+   {
+    "num": "02",
+    "title": "Framework: task × context and 11 dimensions",
+    "desc": "The unit of substitution and its dimensions"
+   },
+   {
+    "num": "03",
+    "title": "Levels, multi-machine systems and process",
+    "desc": "Five levels, weakest link and six steps"
+   },
+   {
+    "num": "04",
+    "title": "Case 1: driving",
+    "desc": "Operational design domain and shifting liability"
+   },
+   {
+    "num": "05",
+    "title": "Case 2: the knowledge-transmitting teacher",
+    "desc": "Transmission is substitutable; coaching is not"
+   },
+   {
+    "num": "06",
+    "title": "Case 3: caring for a one-year-old",
+    "desc": "Multi-machine systems and fewer caregivers"
+   },
+   {
+    "num": "07",
+    "title": "Implications for education",
+    "desc": "Helping students face future substitution"
+   }
+  ],
+  "m0_stats": [
+   {
+    "val": "7",
+    "label": "Learning modules"
+   },
+   {
+    "val": "11",
+    "label": "Dimensions"
+   },
+   {
+    "val": "5",
+    "label": "Substitution levels"
+   },
+   {
+    "val": "3",
+    "label": "Job cases"
+   }
+  ],
+  "m0_start": "Start learning →",
+  "m0_formula_note": "One formula for humans and machines",
+  "mlab_nav": "8. Interactive Lab",
+  "mlab_title": "Interactive Lab",
+  "mlab_desc": "Four exercises apply the method to concrete cases: analyse a role's substitutability, judge substitution levels, sort out who bears responsibility, and design a multi-machine system for toddler care.",
+  "mlab_labs": [
+   {
+    "title": "Lab 1: Substitutability analyser",
+    "desc": "Pick a role, set a substitution level for each task and mark the critical ones, then see whether the result is fewer people or a vanishing role."
+   },
+   {
+    "title": "Lab 2: Levels of substitution",
+    "desc": "Decide which level, from 0 to 4, each scenario belongs to."
+   },
+   {
+    "title": "Lab 3: Who is responsible?",
+    "desc": "Tell apart responsible behaviour that can be built into machines from responsibility that an organisation or a person must bear."
+   },
+   {
+    "title": "Lab 4: Multi-machine design for toddler care",
+    "desc": "Match each care task to a machine and find the weakest-link tasks that still need a person."
+   }
+  ],
+  "lab_check": "Check answers",
+  "lab_reset": "Reset",
+  "lab_score": "{c} of {n} correct",
+  "mres_nav": "9. Learning Resources",
+  "mres_title": "Learning Resources",
+  "mres_desc": "The main sources, standards and current-state reports cited in this unit. Academic sources are chiefly English-language journals; industry and news sources date quickly.",
+  "mres_groups": [
+   {
+    "title": "Tasks and automation",
+    "links": [
+     {
+      "label": "Autor, Levy and Murnane (2003)",
+      "url": "https://doi.org/10.1162/003355303322552801",
+      "desc": "Computers substitute routine tasks and complement non-routine ones"
+     },
+     {
+      "label": "Frey and Osborne (2017)",
+      "url": "https://doi.org/10.1016/j.techfore.2016.08.019",
+      "desc": "Computerisation probabilities for 702 occupations and three bottlenecks"
+     },
+     {
+      "label": "Acemoglu and Restrepo (2019)",
+      "url": "https://doi.org/10.1257/jep.33.2.3",
+      "desc": "Displacement by automation and reinstatement through new tasks"
+     }
+    ]
+   },
+   {
+    "title": "Properties of machine learning",
+    "links": [
+     {
+      "label": "Kirkpatrick et al. (2017)",
+      "url": "https://doi.org/10.1073/pnas.1611835114",
+      "desc": "Catastrophic forgetting in neural networks"
+     },
+     {
+      "label": "Bourtoule et al. (2021)",
+      "url": "https://doi.org/10.1109/SP40001.2021.00019",
+      "desc": "Machine unlearning: why deleting data from a model is hard"
+     },
+     {
+      "label": "Tomlinson et al. (2024)",
+      "url": "https://doi.org/10.1038/s41598-024-54271-x",
+      "desc": "Emissions of AI and humans for writing and illustrating"
+     }
+    ]
+   },
+   {
+    "title": "Teaching and child development",
+    "links": [
+     {
+      "label": "Kestin et al. (2025)",
+      "url": "https://doi.org/10.1038/s41598-025-97652-6",
+      "desc": "A pedagogically designed AI tutor outperformed an active-learning class"
+     },
+     {
+      "label": "Bastani et al. (2025)",
+      "url": "https://doi.org/10.1073/pnas.2422633122",
+      "desc": "Generative AI without guardrails can harm learning"
+     },
+     {
+      "label": "Reich and Ruipérez-Valiente (2019)",
+      "url": "https://doi.org/10.1126/science.aav7958",
+      "desc": "Persistently low MOOC completion rates"
+     },
+     {
+      "label": "Kuhl, Tsao and Liu (2003)",
+      "url": "https://doi.org/10.1073/pnas.1532872100",
+      "desc": "Infants learned foreign speech sounds from live tutors, not recordings"
+     }
+    ]
+   },
+   {
+    "title": "Automated driving today (dates quickly)",
+    "links": [
+     {
+      "label": "SAE J3016 levels",
+      "url": "https://www.sae.org/standards/content/j3016_202104/",
+      "desc": "Levels 0 to 5 of driving automation (revised in September 2026)"
+     },
+     {
+      "label": "Mercedes Level 3 liability",
+      "url": "https://iotworldtoday.com/2022/03/28/mercedes-to-be-responsible-for-crashes-involving-drive-pilot-system",
+      "desc": "The maker is liable when the system is engaged"
+     },
+     {
+      "label": "Waymo expands to 14 cities",
+      "url": "https://www.bloomberg.com/news/articles/2026-09-01/waymo-expands-paid-robotaxi-rides-to-denver-san-diego-and-tampa",
+      "desc": "Paid driverless ride-hailing, September 2026"
+     }
+    ]
+   }
+  ],
+  "mana_nav": "10. Learning Analytics",
+  "date": "Version 2026.11.27",
+  "copyright": "For Educational Use Only",
+  "architect_label": "Architect:",
+  "architect_name": "Prof. Shihmin Lo",
+  "architect_url": "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo",
+  "m1_nav": "1. Comparing",
+  "m1_title": "Comparing Humans and Machines",
+  "m1_overview": "Before comparing humans and machines, fix which human, which system and which task. This module sets out the rules for a fair comparison, rewrites common claims as conditional statements, and uses the KSA formula to put humans and machines in one framework.",
+  "m1_highlights": [
+   "Units of comparison",
+   "Conditional claims",
+   "Competency = f(K, S, A | context, task)",
+   "Mapping components",
+   "Accountability",
+   "Verifiability"
+  ],
+  "m1_wrapup": "Comparing humans and machines fairly means stating the unit of comparison and writing conclusions as conditional claims. Using the same KSA formula for both shows that knowledge, skills and abilities compare most easily, attitudes and motives less so, and accountability cannot be built into machines at all. These distinctions underpin every later analysis: only when you know exactly what is being compared does a conclusion mean anything.",
+  "m1_p1": "The most common mistake in comparing humans and machines is choosing a convenient opponent: the weakest person when arguing that machines are better, and an expert when arguing the opposite. A fair comparison first fixes which human, which system and which task and metric. Many claims therefore only hold as conditional statements. 'Humans learn from fewer examples' holds per example; but counting total emissions for the same task, one study estimated that AI emits 130 to 1,500 times less CO2e per page of text than a human (Tomlinson et al., 2024).",
+  "m1_p2": "'Machines are better than people', or the reverse, means nothing definite without a stated context and task.",
+  "m1_p3": "When Competency = f(K, S, A | context, task) is used for machines, knowledge maps to knowledge in the model's weights plus retrieved information; skills map to learned procedures, tool use and motor control; and abilities map to the model's architecture, size and sensor specifications. All three compare well. Attitudes map to behavioural tendencies set by rules or training, a medium fit; motives are given by instructions or an objective function, a poor fit.",
+  "m1_p4": "Responsibility has two meanings. Responsible behaviour, such as obeying rules, putting safety first and stopping when unsure, can be built into rules and training. Accountability, meaning who pays or is punished when something goes wrong, can only be assigned to people or organisations by law and contract. Attitudes work the same way: what matters is not whether a machine really has attitudes but whether its tendencies can be verified in new situations. Machines also have a property people lack: they can be swapped for a newer version wholesale, though each swap needs fresh verification.",
+  "m1_terms": [
+   {
+    "front": "Units of comparison",
+    "back": "Fix which human, which system, and which task and metric before comparing"
+   },
+   {
+    "front": "Conditional claim",
+    "back": "Rewriting 'machines are better' as 'better under this metric and task'"
+   },
+   {
+    "front": "Machine abilities",
+    "back": "Model architecture, size, context length, sensors and hardware specifications"
+   },
+   {
+    "front": "Responsible behaviour",
+    "back": "Obeying rules, safety first, stopping when unsure; can be built into machines"
+   },
+   {
+    "front": "Accountability",
+    "back": "Who pays or is punished; assigned to people or organisations by law and contract"
+   },
+   {
+    "front": "Verifiability",
+    "back": "Whether a machine's behavioural tendencies can be checked in new situations"
+   }
+  ],
+  "m1_q": [
+   {
+    "q": "Which of these is NOT something to fix before comparing humans and machines?",
+    "opts": [
+     "Which kind of human",
+     "Which system and version",
+     "Which task and metric",
+     "The developer company's current share price"
+    ],
+    "ans": _A3,
+    "exp": "The units are the human, the system and the task; share prices are irrelevant."
+   },
+   {
+    "q": "When does 'humans learn from fewer examples' hold?",
+    "opts": [
+     "When counting learning per example",
+     "When counting total accumulated experience",
+     "When comparing total emissions for a task",
+     "When comparing hardware upgrade speed"
+    ],
+    "ans": _A0,
+    "exp": "It holds per example; counting total experience may reverse it."
+   },
+   {
+    "q": "Using the KSA formula for machines, which compares worst?",
+    "opts": [
+     "Knowledge",
+     "Skills",
+     "Motives",
+     "Abilities"
+    ],
+    "ans": _A2,
+    "exp": "A machine's goals come from instructions or an objective function, not inner motives."
+   },
+   {
+    "q": "Which is accountability rather than responsible behaviour?",
+    "opts": [
+     "Stopping safely when unsure",
+     "Giving priority to traffic rules",
+     "Who pays after an accident",
+     "Refusing a dangerous instruction"
+    ],
+    "ans": _A2,
+    "exp": "Paying and being punished are assigned by law and contract, not built into machines."
+   },
+   {
+    "q": "When assessing a machine's 'attitudes', what matters?",
+    "opts": [
+     "Whether it really has human-like feelings inside",
+     "Whether its tendencies can be verified in new situations",
+     "Whether it looks friendly",
+     "The developer's personal values and beliefs"
+    ],
+    "ans": _A1,
+    "exp": "Substitution analysis looks at behavioural tendencies that can be verified."
+   },
+   {
+    "q": "Machines can be swapped for newer versions. What limitation comes with this?",
+    "opts": [
+     "New versions are always worse",
+     "Every swap needs fresh verification",
+     "No supervision is needed afterwards",
+     "Swaps can happen only once a decade"
+    ],
+    "ans": _A1,
+    "exp": "When the system or its domain changes, earlier assessments cannot simply carry over."
+   }
+  ],
+  "m2_nav": "2. Framework",
+  "m2_title": "Framework: Task × Context and Eleven Dimensions",
+  "m2_overview": "The unit of substitution is the task in its context, not the whole occupation. This module introduces task-based research on automation and eleven dimensions for judging how likely a task is to be substituted in a given context.",
+  "m2_highlights": [
+   "Task × context",
+   "Routine tasks",
+   "Bottlenecks to automation",
+   "Eleven dimensions",
+   "Displacement effect",
+   "Reinstatement effect"
+  ],
+  "m2_wrapup": "Breaking an occupation into tasks and stating each task's context is the first step in any substitution analysis. The eleven dimensions give grounds for judgement across technology, social and risk factors, and economics and systems, but they are not fixed answers: machine progress moves the boundary and new tasks keep appearing. Record the date of each assessment and revisit it regularly.",
+  "m2_p1": "An occupation is a bundle of tasks. Autor, Levy and Murnane (2003) found that computers substitute for routine tasks that follow explicit rules and complement non-routine problem solving and complex communication. Changes in tasks within the same occupation accounted for nearly half of the effect. The job title may stay the same while the work itself changes.",
+  "m2_p2": "The unit of substitution is task × context, not the occupation.",
+  "m2_p3": "Frey and Osborne (2017) named three bottlenecks to automation: perception and manipulation, creative intelligence and social intelligence. Generative AI has partly loosened the last two, so this unit uses eleven dimensions instead. The technical ones are codifiability, bounded context, data and feedback, and physical manipulation. The social and risk ones are social interaction and trust, cost of error, and accountability. The economic and system ones are economics, decomposability, integration cost and redesignable context.",
+  "m2_p4": "Acemoglu and Restrepo (2019) point out that automation lets machines take over tasks people used to do, the displacement effect, while new tasks create fresh demand for labour, the reinstatement effect. Analysis should therefore look at which new tasks appear as well as which tasks are replaced. Every dimension also shifts as machines improve, so any assessment has a date attached.",
+  "m2_terms": [
+   {
+    "front": "Routine tasks",
+    "back": "Cognitive or manual tasks that follow explicit rules; the first to be computerised"
+   },
+   {
+    "front": "Bottlenecks to automation",
+    "back": "Perception and manipulation, creative intelligence and social intelligence"
+   },
+   {
+    "front": "Displacement effect",
+    "back": "Machines take over tasks people did, lowering labour demand"
+   },
+   {
+    "front": "Reinstatement effect",
+    "back": "New tasks appear and create fresh demand for labour"
+   },
+   {
+    "front": "Bounded context",
+    "back": "Whether the operating range can be clearly defined with little variation"
+   },
+   {
+    "front": "Redesignable context",
+    "back": "Whether the environment can be adapted to suit machines, like clearer road markings"
+   }
+  ],
+  "m2_q": [
+   {
+    "q": "In the task-based view, what is the basic unit of substitution analysis?",
+    "opts": [
+     "The whole occupation",
+     "Task × context",
+     "The firm's industry",
+     "Employees' education level"
+    ],
+    "ans": _A1,
+    "exp": "Substitution happens at the level of task and context, not whole occupations."
+   },
+   {
+    "q": "Which tasks did Autor et al. (2003) find computers replaced first?",
+    "opts": [
+     "Negotiations that require persuading other people",
+     "Routine tasks that follow explicit rules",
+     "Design tasks that need original ideas",
+     "Handling objects in cluttered spaces"
+    ],
+    "ans": _A1,
+    "exp": "Routine tasks can be written as rules, so they went first."
+   },
+   {
+    "q": "Which of Frey and Osborne's bottlenecks has generative AI partly loosened?",
+    "opts": [
+     "Perception, manipulation and dexterous handling",
+     "Creative and social intelligence",
+     "Data storage and transfer",
+     "Liability and insurance"
+    ],
+    "ans": _A1,
+    "exp": "Generative AI writes, converses and creates, loosening those two."
+   },
+   {
+    "q": "What is it called when new tasks create fresh demand for labour?",
+    "opts": [
+     "Displacement effect",
+     "Reinstatement effect",
+     "Weakest-link substitution effect",
+     "Scale effect"
+    ],
+    "ans": _A1,
+    "exp": "Acemoglu and Restrepo (2019) call it the reinstatement effect."
+   },
+   {
+    "q": "Which is one of the social and risk dimensions?",
+    "opts": [
+     "Codifiability",
+     "Cost of error",
+     "Integration cost",
+     "Data and feedback"
+    ],
+    "ans": _A1,
+    "exp": "These are social interaction and trust, cost of error and accountability."
+   },
+   {
+    "q": "Why should a substitution assessment carry a date?",
+    "opts": [
+     "To help calculate grades",
+     "Machine progress moves the boundary",
+     "The law requires it",
+     "The date changes the dimension names"
+    ],
+    "ans": _A1,
+    "exp": "Every dimension shifts as machines improve, so results date."
+   }
+  ],
+  "m3_nav": "3. Levels and Process",
+  "m3_title": "Levels, Multi-machine Systems and Process",
+  "m3_overview": "Substitution is not all or nothing. This module introduces five levels of substitution, the weakest-link rule when several machines share one role, and a six-step process from defining the role to planning new human roles.",
+  "m3_highlights": [
+   "Five levels",
+   "Substitution within a domain",
+   "Multi-machine systems",
+   "Weakest-link rule",
+   "Fewer people needed",
+   "Six-step process"
+  ],
+  "m3_wrapup": "Five levels let us describe the division of work between people and machines precisely, instead of asking only whether a job will be replaced. Multi-machine systems remind us that the hardest critical task, the weakest link, decides how many people a role still needs. The six-step process turns these ideas into a reusable method that must be repeated as machines improve.",
+  "m3_p1": "Borrowing the logic of driving-automation levels, substitution has five levels. Level 0: humans do the work. Level 1: machines assist, while humans decide and act. Level 2: machines act under supervision, with humans watching throughout and ready to take over. Level 3: machines act within a defined domain and hand back to a human, or stop safely, outside it. Level 4: machines act in every situation a human could handle.",
+  "m3_p2": "If even one critical task cannot be done safely by a machine, people must stay in the role.",
+  "m3_p3": "Substitution does not need one machine that does everything. A role can be split into tasks, given to machines with different strengths and integrated into one system. Three questions follow. Can a machine do each task? Can the machines be integrated, and who is responsible if the system fails? Can the setting be redesigned to suit machines? The outcome is either fewer people needed, with one person and machines covering more, or the role disappearing.",
+  "m3_p4": "The analysis has six steps: 1 define the role and context; 2 break it into tasks and mark the critical ones; 3 match machines to each task and compare human and machine components; 4 score the eleven dimensions; 5 set the substitution level and find the weakest link; 6 plan new human roles such as supervision, handling exceptions, integration and accountability. When machines are upgraded or the context changes, start again at step 1.",
+  "m3_terms": [
+   {
+    "front": "Substitution within a domain",
+    "back": "Level 3: machines act within a defined domain and hand back outside it"
+   },
+   {
+    "front": "Supervised execution",
+    "back": "Level 2: machines act while humans supervise and stand ready to take over"
+   },
+   {
+    "front": "Weakest-link rule",
+    "back": "If any critical task cannot be done safely by machines, people must stay"
+   },
+   {
+    "front": "Fewer people needed",
+    "back": "One person with machines covers more; the role remains"
+   },
+   {
+    "front": "Integration cost",
+    "back": "The cost of hand-offs, coordination and assigning blame across machines"
+   },
+   {
+    "front": "Six-step process",
+    "back": "Define, decompose, match, score, judge, plan new roles, and repeat over time"
+   }
+  ],
+  "m3_q": [
+   {
+    "q": "'Machines act while humans supervise and stand ready to take over' is which level?",
+    "opts": [
+     "Level 1",
+     "Level 2",
+     "Level 3",
+     "Level 4"
+    ],
+    "ans": _A1,
+    "exp": "Level 2 is supervised execution."
+   },
+   {
+    "q": "At Level 3, what should the system do outside its domain?",
+    "opts": [
+     "Keep going and ignore the risk",
+     "Hand back to a human or stop safely",
+     "Expand its own domain automatically",
+     "Ask the maker to rewrite the code remotely"
+    ],
+    "ans": _A1,
+    "exp": "Outside the defined domain it hands back or stops safely."
+   },
+   {
+    "q": "Under the weakest-link rule, what sets the minimum staffing of a role?",
+    "opts": [
+     "The easiest task to substitute in the role",
+     "The hardest critical task to substitute",
+     "The average score across tasks",
+     "The purchase price of machines"
+    ],
+    "ans": _A1,
+    "exp": "If any critical task cannot be substituted safely, people must stay."
+   },
+   {
+    "q": "When one person with machines covers more cases, what is the outcome called?",
+    "opts": [
+     "Role disappears",
+     "Fewer people needed",
+     "Full substitution",
+     "Displacement effect"
+    ],
+    "ans": _A1,
+    "exp": "The role remains but needs fewer people."
+   },
+   {
+    "q": "Which is NOT one of the questions for multi-machine systems?",
+    "opts": [
+     "Can a machine do each task",
+     "Can the machines be integrated",
+     "Can the setting be redesigned",
+     "Do the machines look fashionable and modern"
+    ],
+    "ans": _A3,
+    "exp": "Appearance has nothing to do with substitutability."
+   },
+   {
+    "q": "When should you return to step 1 and reassess?",
+    "opts": [
+     "Never; one careful analysis is enough for good",
+     "When machines or the context change",
+     "Only when laws change",
+     "Only when staff resign"
+    ],
+    "ans": _A1,
+    "exp": "The boundary moves, so the assessment must be repeated."
+   }
+  ],
+  "m4_nav": "4. Case: Driving",
+  "m4_title": "Case 1: Driving",
+  "m4_overview": "Driving is the classic case of one integrated system taking over human tasks. This module applies the six steps to professional driving, explaining the operational design domain, how far each task can be substituted and how liability shifts from driver to manufacturer.",
+  "m4_highlights": [
+   "SAE J3016",
+   "Dynamic driving task",
+   "Operational design domain",
+   "Level 3",
+   "Shifting liability",
+   "Robotaxis"
+  ],
+  "m4_wrapup": "The driving case shows that substitution depends on context. Mapped city streets have reached substitution within a domain, but rural roads, bad weather and last-mile handling still need people. Accountability does not vanish; it moves from driver to manufacturer or operator. Each expansion of the operating domain must be verified again, so the boundary moves, but at a pace limited by the cost of verification.",
+  "m4_p1": "SAE J3016 defines driving automation as systems that perform part or all of the dynamic driving task on a sustained basis, with Levels 0 to 5 set by the roles of the human driver and the system (SAE International, 2026). At Level 3 the system drives under defined conditions, and a human must take over after an alert or an evident malfunction. Those defined conditions are the operational design domain, or ODD, which is the 'context' in the formula.",
+  "m4_p2": "Professional drivers will not be replaced wholesale; what gets replaced is driving within a particular operational design domain.",
+  "m4_p3": "Breaking down a professional driver's tasks: within the ODD, machines do better at perception and response, vehicle control, and traffic rules and routing, because they sense in 360 degrees, never tire and react fast. Defensive driving can be written into rules, though edge cases still need verification. Handling situations outside the ODD, loading cargo, delivering to the door and serving passengers remain weak points.",
+  "m4_p4": "On liability, Mercedes-Benz has said it is responsible for crashes while its Level 3 system is engaged and owners are responsible when it is off, unless the driver fails to take over when asked. Liability moves from the driver to the manufacturer, not to the machine. In September 2026 Waymo expanded paid driverless ride-hailing to 14 US cities, testing for about two months before opening each new city. The human role shifts to remote supervision, exceptions, physical handling, customer service and accountability.",
+  "m4_terms": [
+   {
+    "front": "Dynamic driving task",
+    "back": "All real-time operational and tactical functions of driving, like steering, speed and detection"
+   },
+   {
+    "front": "Operational design domain",
+    "back": "The conditions a system is designed to operate in, such as area, weather and time"
+   },
+   {
+    "front": "Level 3 automation",
+    "back": "The system drives under set conditions; a human takes over after an alert or fault"
+   },
+   {
+    "front": "Shifting liability",
+    "back": "With Level 3 engaged, liability moves from driver to manufacturer"
+   },
+   {
+    "front": "Pre-launch testing",
+    "back": "About two months of employee-only testing before opening a new city"
+   },
+   {
+    "front": "New roles for drivers",
+    "back": "Remote supervision, exceptions, physical handling, service and accountability"
+   }
+  ],
+  "m4_q": [
+   {
+    "q": "In the driving case, what does 'context' in the formula correspond to?",
+    "opts": [
+     "The car brand",
+     "The operational design domain",
+     "The driver's years of experience",
+     "The road toll rates"
+    ],
+    "ans": _A1,
+    "exp": "The ODD defines the conditions the system can safely operate in."
+   },
+   {
+    "q": "Which task do machines do better within the ODD?",
+    "opts": [
+     "Delivering to the door and loading",
+     "Settling disputes between passengers",
+     "Perceiving traffic and reacting",
+     "Improvising outside the domain"
+    ],
+    "ans": _A2,
+    "exp": "360-degree sensing, no fatigue and fast reactions make them stronger here."
+   },
+   {
+    "q": "Mercedes-Benz's Level 3 statement shows liability moving to whom?",
+    "opts": [
+     "The machine itself",
+     "The manufacturer",
+     "The insurance broker",
+     "The traffic police"
+    ],
+    "ans": _A1,
+    "exp": "Liability moves from driver to manufacturer, not to the machine."
+   },
+   {
+    "q": "If a driver ignores a Level 3 takeover request and crashes, how is liability usually handled?",
+    "opts": [
+     "The maker is always liable, since the system was on",
+     "The driver breached the duty of care",
+     "Passing vehicles are liable",
+     "Nobody, since a machine was driving"
+    ],
+    "ans": _A1,
+    "exp": "The maker's commitment is conditional on the driver taking over when asked."
+   },
+   {
+    "q": "Waymo tests for about two months before each new city. What does that show?",
+    "opts": [
+     "The machines are mature and need no further testing",
+     "Expanding the domain needs fresh verification",
+     "New cities ban driverless cars",
+     "Riders need two months to learn"
+    ],
+    "ans": _A1,
+    "exp": "When the domain changes, earlier assessments cannot simply carry over."
+   },
+   {
+    "q": "Which context currently has the lowest substitutability?",
+    "opts": [
+     "City taxis within a mapped area",
+     "Highway freight on trunk routes",
+     "Rural driving in heavy snow",
+     "Fixed-route campus shuttles"
+    ],
+    "ans": _A2,
+    "exp": "An open, highly variable setting is hardest for machines."
+   }
+  ],
+  "m5_nav": "5. Case: Teaching",
+  "m5_title": "Case 2: The Knowledge-transmitting Teacher",
+  "m5_overview": "This module deliberately limits the teacher to transmitting knowledge, leaving out coaching and care. Transmission itself turns out to be highly substitutable, but the evidence shows that learning depends on coaching functions beyond transmission.",
+  "m5_highlights": [
+   "Knowledge transmitter",
+   "AI tutor",
+   "Guardrails",
+   "AI as a crutch",
+   "MOOC completion",
+   "Gatekeeping and certification"
+  ],
+  "m5_wrapup": "Pure knowledge transmission is almost fully substitutable, but it was never the main source of educational value. The bottleneck here is the opposite of driving: not technology but the learner's motivation, self-discipline and effort. An AI that simply hands over answers takes away the practice students need. What can be substituted is the delivery of knowledge; what cannot is designing the process through which students really learn, and taking responsibility for the result.",
+  "m5_p1": "Breaking down pure knowledge transmission: machines are strong at explaining concepts, answering questions, and setting and marking knowledge tests, so these are highly substitutable. Diagnosing misconceptions and updating content are medium. Deciding what is worth teaching, taking responsibility for accuracy and marks, and summative assessment and certification involve values and accountability, so substitutability is low. Compared with driving, transmission needs almost no physical action, single errors can be corrected and data is plentiful, so the technical barrier is lower.",
+  "m5_p2": "Content has long been free; people fail to learn because of motivation, self-discipline and feedback.",
+  "m5_p3": "The evidence supports substituting transmission. In a Harvard randomised trial with 194 students, an AI tutor built on teaching best practice helped students learn more in less time (Kestin et al., 2025). But in an experiment with nearly 1,000 high school students, those using plain GPT-4 did better in practice yet scored 17% worse than the control group once the AI was removed; guardrails such as not giving answers directly largely removed this harm (Bastani et al., 2025). Those guardrails are exactly coaching functions.",
+  "m5_p4": "Books, radio and massive open online courses (MOOCs) were each expected to replace lectures, yet MOOC completion rates stayed low (Reich & Ruipérez-Valiente, 2019). The level of substitution varies by context: self-disciplined adult learners can reach substitution within a domain, novices with weak self-regulation still need coaching and care, and high-stakes certification stays with people. Teachers move towards being learning designers, coaches and gatekeepers.",
+  "m5_terms": [
+   {
+    "front": "Knowledge transmitter",
+    "back": "A teacher role limited to delivering content, without coaching or care"
+   },
+   {
+    "front": "AI tutor",
+    "back": "An AI system that explains, answers and sets questions at the student's level"
+   },
+   {
+    "front": "Guardrails",
+    "back": "Such as not giving answers directly and prompting students to reason; a coaching function"
+   },
+   {
+    "front": "AI as a crutch",
+    "back": "Doing well while practising with AI but worse once it is removed"
+   },
+   {
+    "front": "MOOC completion",
+    "back": "Persistently low completion shows content is not the bottleneck"
+   },
+   {
+    "front": "Gatekeeping and certification",
+    "back": "Checking AI content and taking responsibility for assessment stays with people"
+   }
+  ],
+  "m5_q": [
+   {
+    "q": "Which task of pure knowledge transmission is least substitutable?",
+    "opts": [
+     "Explaining concepts with everyday examples",
+     "Answering questions",
+     "Assessment and certification",
+     "Setting and marking tests"
+    ],
+    "ans": _A2,
+    "exp": "Certification involves accountability and institutional legitimacy."
+   },
+   {
+    "q": "Why is the technical barrier lower for transmission than for driving?",
+    "opts": [
+     "Classrooms carry no risk of any kind at all",
+     "Little physical action; errors can be fixed",
+     "Teachers earn more than drivers",
+     "Students are easier to please"
+    ],
+    "ans": _A1,
+    "exp": "There is no physical-handling or personal-safety barrier."
+   },
+   {
+    "q": "In Bastani et al. (2025), how did students who practised with plain GPT-4 do on the exam?",
+    "opts": [
+     "17% better than control",
+     "17% worse than control",
+     "Exactly the same",
+     "They could not sit it"
+    ],
+    "ans": _A1,
+    "exp": "They used AI as a crutch and did worse once it was gone."
+   },
+   {
+    "q": "The guardrails that removed the harm in Bastani's study are essentially which function?",
+    "opts": [
+     "A caregiver's care",
+     "A coach's guidance",
+     "An administrator's management",
+     "An advertiser's marketing"
+    ],
+    "ans": _A1,
+    "exp": "Not giving answers and prompting reasoning is coaching."
+   },
+   {
+    "q": "What do persistently low MOOC completion rates best show?",
+    "opts": [
+     "The video and sound quality are too poor",
+     "Content is not the main bottleneck",
+     "Internet speeds are too slow",
+     "There are too few courses"
+    ],
+    "ans": _A1,
+    "exp": "Content is free; the bottleneck is motivation, discipline and feedback."
+   },
+   {
+    "q": "In which context can knowledge transmission be substituted most?",
+    "opts": [
+     "Primary pupils with weak self-regulation",
+     "Self-disciplined, motivated adult learners",
+     "High-stakes national licensing exams",
+     "Fast-changing frontier fields"
+    ],
+    "ans": _A1,
+    "exp": "When learners bring their own motivation and discipline, coaching matters least."
+   }
+  ],
+  "m6_nav": "6. Case: Toddler Care",
+  "m6_title": "Case 3: Caring for a One-year-old",
+  "m6_overview": "A one-year-old is learning to talk, crawl and walk, and still needs feeding, dressing and settling to sleep. This module shows how several machines could share the care tasks and why the result is fewer caregivers rather than none.",
+  "m6_highlights": [
+   "Toddler",
+   "Multi-machine portfolio",
+   "Physical care",
+   "Immediate safety response",
+   "Responsive interaction",
+   "Fewer people needed"
+  ],
+  "m6_wrapup": "Toddler care shows both the power and the limits of multi-machine systems. Logistics and monitoring can be spread across machines, but the hardest critical tasks mean a person must stay. The bottleneck here lies in the body and the emotions, and errors are costly and irreversible. Machines cut the chores, not the caring itself, freeing caregivers to spend more time where a person is needed most.",
+  "m6_p1": "Breaking down the care of a one-year-old: cleaning and laundry (robot vacuums, washing machines) and keeping parents informed (AI summaries) are highly substitutable; sleep monitoring is medium-high; preparing milk and meals is medium. Cameras can detect and warn about hazards but cannot reach out in time to stop a fall or a swallowed object. Feeding, dressing, changing nappies, bathing, settling to sleep and picking the child up all need dexterous handling of a fragile body, and no safe machine does this today.",
+  "m6_p2": "Machines can take over logistics and monitoring, but physical care, immediate safety response and responsive interaction still need a person.",
+  "m6_p3": "Context, here age, changes what can be substituted. The FDA-authorised SNOO bassinet keeps babies on their backs and responds to crying with white noise and rocking, but only from birth to six months, before babies can roll; it no longer fits a one-year-old. Language development also needs people: Kuhl, Tsao and Liu (2003) found that nine-month-olds learned Mandarin speech sounds from live tutors, but recordings, whether video or audio only, had no effect.",
+  "m6_p4": "By the weakest-link rule, immediate safety response, physical care and responsive interaction still need a person, so the result is fewer caregivers, not none. Caregivers shift time from housework and watching to feeding, dressing, settling and interacting, and they integrate the devices and act on alerts. Whether responsive AI can support toddlers' language and social development has not been researched enough to draw conclusions.",
+  "m6_terms": [
+   {
+    "front": "Toddler",
+    "back": "A child of about 12 to 36 months, as distinct from an infant under one"
+   },
+   {
+    "front": "Multi-machine portfolio",
+    "back": "Spreading one role's tasks across machines with different strengths"
+   },
+   {
+    "front": "Immediate safety response",
+    "back": "Physically stopping a fall or swallowing in time; cameras can only warn"
+   },
+   {
+    "front": "Responsive interaction",
+    "back": "Responding in the moment to a child's sounds and faces, supporting language"
+   },
+   {
+    "front": "Age changes the domain",
+    "back": "SNOO fits babies under six months, not a one-year-old"
+   },
+   {
+    "front": "The caregiver's new role",
+    "back": "Integrating devices and handling alerts, with more time for care and play"
+   }
+  ],
+  "m6_q": [
+   {
+    "q": "Which toddler-care task is most substitutable?",
+    "opts": [
+     "Picking up and calming a crying child",
+     "Cleaning and laundry",
+     "Stopping the child climbing and falling",
+     "Responding to the child's babbling"
+    ],
+    "ans": _A1,
+    "exp": "Robot vacuums and washing machines already do it."
+   },
+   {
+    "q": "Cameras can detect hazards, so why is safety supervision still hard to substitute?",
+    "opts": [
+     "The image quality and night vision are too poor",
+     "They warn but cannot physically stop",
+     "Toddlers dislike being filmed",
+     "Cameras cost too much"
+    ],
+    "ans": _A1,
+    "exp": "Immediate safety response needs physical action."
+   },
+   {
+    "q": "What does the SNOO bassinet example show?",
+    "opts": [
+     "Machines can already fully replace every caregiver",
+     "Age changes what can be substituted",
+     "All baby products need approval",
+     "Toddlers need no sleep monitoring"
+    ],
+    "ans": _A1,
+    "exp": "It fits babies under six months, not a one-year-old."
+   },
+   {
+    "q": "In Kuhl et al. (2003), what helped infants learn Mandarin speech sounds?",
+    "opts": [
+     "Watching video recordings only",
+     "Audio only",
+     "Live interaction",
+     "Reading picture books together"
+    ],
+    "ans": _A2,
+    "exp": "The video and audio groups showed no effect."
+   },
+   {
+    "q": "By the weakest-link rule, what is the outcome for toddler care?",
+    "opts": [
+     "The role disappears",
+     "Fewer people; the role remains",
+     "Cameras take over entirely",
+     "Only remote watching is needed"
+    ],
+    "ans": _A1,
+    "exp": "Three critical tasks still need a person, so fewer people, not none."
+   },
+   {
+    "q": "What does current evidence say about responsive AI supporting toddlers' language?",
+    "opts": [
+     "Proven fully effective",
+     "Proven fully ineffective",
+     "Not enough research to conclude",
+     "Effective only for bilingual homes"
+    ],
+    "ans": _A2,
+    "exp": "There is not enough research to draw a conclusion."
+   }
+  ],
+  "m7_nav": "7. Education",
+  "m7_title": "Helping Students Face Future Substitution",
+  "m7_overview": "Students do not need a list of safe jobs; they need a method they can reuse themselves. This module sets out four principles and matching activities from primary school to university.",
+  "m7_highlights": [
+   "Think in tasks",
+   "Teach the method",
+   "No fear, no promises",
+   "AI as a crutch",
+   "Stage-based design",
+   "Regular reassessment"
+  ],
+  "m7_wrapup": "Helping students face substitution is not about predicting which jobs will vanish. It is about building an analytical habit they can use again and again, and actually developing their abilities while studying. From noticing household chores in primary school to designing human–machine workflows at university, every stage practises the same thing: break work into tasks, state the context, judge the split between people and machines, and find the new roles people should take on.",
+  "m7_p1": "There are four principles. First, think in tasks: ask which tasks in a job machines will do, not which jobs will disappear. Second, teach the method rather than a list of safe jobs, because the boundary keeps moving and lists soon date. Third, neither frighten nor reassure: old tasks will be replaced and new ones will appear (Acemoglu & Restrepo, 2019), so the aim is the ability to move to new tasks.",
+  "m7_p2": "Letting AI do your homework means never building the ability in the first place, which makes you the easiest to replace later.",
+  "m7_p3": "The fourth principle is that the risk starts at school. Students who lean on AI as a crutch do worse once it is removed (Bastani et al., 2025). In primary school, pupils can list household chores, find those machines already do, then design a 'robot team for a babysitter' in groups and discover for themselves what machines cannot do. In junior high, they can interview parents about their jobs, sort the tasks into 'machine does it', 'machine helps' and 'needs a person', and try an AI-crutch experiment.",
+  "m7_p4": "In senior high, linked to career planning and self-directed learning, students choose a target occupation, list its tasks, score the eleven dimensions and imagine the situation in 2035. At university, students use their own field, such as trade documents, market research, translation and negotiation in international business, to design human–machine workflows and identify the components they need to develop and the responsibilities they will carry. Mistakes to avoid include using fear instead of understanding, offering safe-job lists, talking only about job titles, and ignoring accountability and new tasks.",
+  "m7_terms": [
+   {
+    "front": "Thinking in tasks",
+    "back": "Asking which tasks machines will do, not which jobs will vanish"
+   },
+   {
+    "front": "Method, not a list",
+    "back": "The boundary moves and lists date; a method can be reused"
+   },
+   {
+    "front": "New tasks",
+    "back": "Automation also creates new tasks where people have the edge"
+   },
+   {
+    "front": "AI as a crutch",
+    "back": "Relying on AI for assignments so the ability never develops"
+   },
+   {
+    "front": "Regular reassessment",
+    "back": "Revisiting the analysis of one's target job as machines improve"
+   },
+   {
+    "front": "Designing human–machine work",
+    "back": "Deciding which tasks people and machines each handle, and how they hand off"
+   }
+  ],
+  "m7_q": [
+   {
+    "q": "Why not give students a list of jobs that won't be replaced?",
+    "opts": [
+     "The list is too long for students to remember",
+     "The boundary moves, so lists date",
+     "Students dislike lists",
+     "Lists infringe copyright"
+    ],
+    "ans": _A1,
+    "exp": "What to teach is a reusable method."
+   },
+   {
+    "q": "What supports 'neither frighten nor reassure'?",
+    "opts": [
+     "Machines will never improve",
+     "Old tasks go and new tasks appear",
+     "Every job will disappear",
+     "Governments will protect every job"
+    ],
+    "ans": _A1,
+    "exp": "Displacement and reinstatement happen together."
+   },
+   {
+    "q": "Why does the risk of being substituted start at school?",
+    "opts": [
+     "Schools themselves will be replaced by robots in the future",
+     "Relying on AI for homework stops abilities developing",
+     "Students choose careers too early",
+     "Textbooks are out of date"
+    ],
+    "ans": _A1,
+    "exp": "Students who lean on AI do worse once it is removed."
+   },
+   {
+    "q": "Which activity suits primary school best?",
+    "opts": [
+     "Scoring a target job on eleven dimensions",
+     "Finding household chores machines already do",
+     "Designing workflows for an international firm",
+     "Forecasting the 2035 labour market"
+    ],
+    "ans": _A1,
+    "exp": "Start from visible everyday machines to build the idea of tasks."
+   },
+   {
+    "q": "What should university-stage activities focus on?",
+    "opts": [
+     "Memorising the names of every job that will vanish",
+     "Designing human–machine workflows for your field",
+     "Avoiding all AI tools",
+     "Learning only programming"
+    ],
+    "ans": _A1,
+    "exp": "Identify the components to develop and the responsibilities to carry."
+   },
+   {
+    "q": "Which of these is a teaching mistake to avoid?",
+    "opts": [
+     "Breaking work into tasks and judging each",
+     "Reassessing regularly",
+     "Talking about job titles only",
+     "Discussing new tasks"
+    ],
+    "ans": _A2,
+    "exp": "Substitution happens at the task level, so job titles alone mislead."
+   }
+  ]
+ }
+};
+
+const Svg = ({ children, size = 20, ...p }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>{children}</svg>
+);
+const IconBookOpen = (p) => <Svg {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Svg>;
+const IconAlertTriangle = (p) => <Svg {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></Svg>;
+const IconCheckCircle = (p) => <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
+const IconGlobe = (p) => <Svg {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></Svg>;
+const IconChevronRight = (p) => <Svg {...p}><polyline points="9 18 15 12 9 6"/></Svg>;
+const IconChevronUp = (p) => <Svg {...p}><polyline points="18 15 12 9 6 15"/></Svg>;
+const IconMenu = (p) => <Svg {...p}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></Svg>;
+const IconX = (p) => <Svg {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Svg>;
+const IconMoon = (p) => <Svg {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Svg>;
+const IconSun = (p) => <Svg {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></Svg>;
+const IconPlay = (p) => <Svg {...p}><polygon points="5 3 19 12 5 21 5 3"/></Svg>;
+const IconPause = (p) => <Svg {...p}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></Svg>;
+const IconSquare = (p) => <Svg {...p}><rect x="4" y="4" width="16" height="16" rx="2"/></Svg>;
+const IconArrowRight = (p) => <Svg {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Svg>;
+const IconActivity = (p) => <Svg {...p}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></Svg>;
+const IconCpu = (p) => <Svg {...p}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></Svg>;
+const IconTrendingUp = (p) => <Svg {...p}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></Svg>;
+const IconLayers = (p) => <Svg {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></Svg>;
+const IconFlag = (p) => <Svg {...p}><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></Svg>;
+const IconZap = (p) => <Svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Svg>;
+const IconFlask = (p) => <Svg {...p}><path d="M9 3h6"/><path d="M10 3v6L4 19a2 2 0 0 0 1.7 3h12.6a2 2 0 0 0 1.7-3L14 9V3"/></Svg>;
+const IconZapLab = (p) => <Svg {...p}><path d="M9 3h6"/><path d="M10 3v6L4 19a2 2 0 0 0 1.7 3h12.6a2 2 0 0 0 1.7-3L14 9V3"/><polyline points="12 12 10.5 15.5 13.5 15.5 12 19"/></Svg>;
+const IconHome = (p) => <Svg {...p}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Svg>;
+
+const C = {
+  pri: 'fill-[#004030] dark:fill-[#D8C3A5]',
+  txt: 'fill-slate-700 dark:fill-slate-200',
+  sub: 'fill-slate-500 dark:fill-slate-400',
+  box: 'fill-[#EEF3EF] dark:fill-slate-700 stroke-[#5E8A78] dark:stroke-slate-500',
+  boxW: 'fill-white dark:fill-slate-800 stroke-[#004030] dark:stroke-[#D8C3A5]',
+  gold: 'fill-[#F3EBDD] dark:fill-[#D8C3A5]/20 stroke-[#D8C3A5]',
+  line: 'stroke-[#004030] dark:stroke-[#D8C3A5]',
+  line2: 'stroke-[#5E8A78] dark:stroke-slate-400',
+  dot: 'fill-[#004030] dark:fill-[#D8C3A5]',
+  dotTxt: 'fill-white dark:fill-[#004030]',
+};
+const Arrow = ({ id }) => (
+  <defs><marker id={id} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" className={C.dot}/></marker></defs>
+);
+const FigWrap = ({ children, title }) => (
+  <div className="w-full bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4"
+       onContextMenu={e => { e.preventDefault(); showCopyrightToast(); }}>
+    {title && <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">{title}</p>}
+    {children}
+  </div>
+);
+const tx = (lang, zh, en) => lang === 'zh' ? zh : en;
+
+const LV = (lang) => [tx(lang,'0 人類執行','0 Human only'), tx(lang,'1 機器輔助','1 Machine assists'), tx(lang,'2 監督下執行','2 Supervised'), tx(lang,'3 範圍內替代','3 Within a domain'), tx(lang,'4 全面替代','4 Full substitution')];
+
+const SvgM1 = ({ lang }) => {
+  const fix = [[tx(lang,'哪一種人','Which human'), tx(lang,'兒童、成人、專家','child, adult, expert')], [tx(lang,'哪一個系統','Which system'), tx(lang,'模型、版本、硬體','model, version, hardware')], [tx(lang,'哪一項任務','Which task'), tx(lang,'內容、範圍、指標','content, scope, metric')]];
+  const comp = [[tx(lang,'知識 K','Knowledge'), 0.9], [tx(lang,'技能 S','Skills'), 0.85], [tx(lang,'基礎能力','Abilities'), 0.85], [tx(lang,'態度 A','Attitudes'), 0.5], [tx(lang,'動機','Motives'), 0.2], [tx(lang,'承擔責任','Accountability'), 0.0]];
+  return (
+    <svg viewBox="0 0 720 420" className="w-full h-auto" draggable="false" role="img">
+      <rect x="110" y="10" width="500" height="52" rx="10" className={C.boxW} strokeWidth="1.5"/>
+      <text x="360" y="42" textAnchor="middle" fontSize="18" fontWeight="700" className={C.pri}>Competency = f(K, S, A | {tx(lang,'情境, 任務','context, task')})</text>
+      {fix.map(([a, b], i) => (
+        <g key={i}>
+          <rect x={20 + i * 233} y="80" width="215" height="64" rx="10" className={C.box} strokeWidth="1.2"/>
+          <text x={127 + i * 233} y="108" textAnchor="middle" fontSize="14" fontWeight="700" className={C.pri}>{a}</text>
+          <text x={127 + i * 233} y="130" textAnchor="middle" fontSize="11" className={C.sub}>{b}</text>
+        </g>
+      ))}
+      <text x="20" y="180" fontSize="13" fontWeight="700" className={C.pri}>{tx(lang,'人與機器的可比擬性','How well each component compares')}</text>
+      {comp.map(([n, v], i) => (
+        <g key={i}>
+          <text x="20" y={214 + i * 32} fontSize="12" className={C.txt}>{n}</text>
+          <rect x="150" y={202 + i * 32} width="520" height="16" rx="8" className="fill-slate-200 dark:fill-slate-700"/>
+          {v > 0 && <rect x="150" y={202 + i * 32} width={520 * v} height="16" rx="8" className={C.dot}/>}
+          {v === 0 && <text x="160" y={214 + i * 32} fontSize="11" className={C.sub}>{tx(lang,'無法寫入機器，由法律與契約分配','Cannot be built in; assigned by law and contract')}</text>}
+        </g>
+      ))}
+    </svg>
+  );
+};
+
+const SvgM2 = ({ lang }) => {
+  const tasks = [tx(lang,'任務 A','Task A'), tx(lang,'任務 B','Task B'), tx(lang,'任務 C','Task C'), tx(lang,'任務 D','Task D')];
+  const groups = [[tx(lang,'技術面','Technical'), [tx(lang,'1 任務可規格化','1 Codifiable'), tx(lang,'2 情境封閉度','2 Bounded context'), tx(lang,'3 資料與回饋','3 Data, feedback'), tx(lang,'4 實體操作','4 Manipulation')]],
+    [tx(lang,'社會與風險面','Social and risk'), [tx(lang,'5 社交與信任','5 Social trust'), tx(lang,'6 錯誤代價','6 Cost of error'), tx(lang,'7 責任可歸屬','7 Accountability')]],
+    [tx(lang,'經濟與系統面','Economics, systems'), [tx(lang,'8 經濟性','8 Economics'), tx(lang,'9 任務可拆解','9 Decomposable'), tx(lang,'10 整合成本','10 Integration'), tx(lang,'11 情境可改造','11 Redesignable')]]];
+  return (
+    <svg viewBox="0 0 720 400" className="w-full h-auto" draggable="false" role="img">
+      <Arrow id="b2"/>
+      <rect x="20" y="20" width="200" height="250" rx="12" className={C.boxW} strokeWidth="1.5"/>
+      <text x="120" y="48" textAnchor="middle" fontSize="14" fontWeight="700" className={C.pri}>{tx(lang,'職業 = 任務組合','Job = bundle of tasks')}</text>
+      {tasks.map((s, i) => (
+        <g key={i}><rect x="40" y={66 + i * 48} width="160" height="36" rx="8" className={C.box}/><text x="120" y={89 + i * 48} textAnchor="middle" fontSize="12" className={C.txt}>{s}</text></g>
+      ))}
+      <line x1="224" y1="145" x2="262" y2="145" className={C.line} strokeWidth="1.8" markerEnd="url(#b2)"/>
+      <text x="243" y="132" textAnchor="middle" fontSize="13" fontWeight="700" className={C.pri}>×</text>
+      {groups.map(([g, items], gi) => (
+        <g key={gi}>
+          <text x={270 + gi * 150} y="38" fontSize="12" fontWeight="700" className={C.pri}>{g}</text>
+          {items.map((s, i) => (
+            <g key={i}><rect x={266 + gi * 150} y={50 + i * 46} width="142" height="36" rx="8" className={gi === 2 && i > 0 ? C.gold : C.box} strokeWidth="1"/><text x={274 + gi * 150} y={73 + i * 46} fontSize="11" className={C.txt}>{s}</text></g>
+          ))}
+        </g>
+      ))}
+      <rect x="20" y="300" width="680" height="80" rx="10" className={C.gold}/>
+      <text x="360" y="332" textAnchor="middle" fontSize="14" fontWeight="700" className={C.pri}>{tx(lang,'替代的單位是「任務 × 情境」，不是職業','The unit is task × context, not the occupation')}</text>
+      <text x="360" y="358" textAnchor="middle" fontSize="11" className={C.sub}>{tx(lang,'取代效果與恢復效果同時存在（Acemoglu & Restrepo, 2019）','Displacement and reinstatement happen together (Acemoglu & Restrepo, 2019)')}</text>
+    </svg>
+  );
+};
+
+const SvgM3 = ({ lang }) => {
+  const lv = LV(lang);
+  const flow = [tx(lang,'人類角色','Human role'), tx(lang,'拆成任務','Tasks'), tx(lang,'配對機器','Machines'), tx(lang,'整合系統','Integration')];
+  return (
+    <svg viewBox="0 0 720 400" className="w-full h-auto" draggable="false" role="img">
+      <Arrow id="b3"/>
+      {lv.map((s, i) => (
+        <g key={i}>
+          <rect x={10 + i * 142} y={150 - i * 26} width="132" height={50 + i * 26} rx="8" className={i === 4 ? C.gold : C.box} strokeWidth="1.2"/>
+          <text x={76 + i * 142} y={174 - i * 26} textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{s}</text>
+        </g>
+      ))}
+      <text x="10" y="226" fontSize="11" className={C.sub}>{tx(lang,'借用 SAE J3016 的分級邏輯','Adapted from SAE J3016 levels')}</text>
+      {flow.map((s, i) => (
+        <g key={i}>
+          <rect x={10 + i * 130} y="260" width="112" height="46" rx="8" className={C.box} strokeWidth="1.2"/>
+          <text x={66 + i * 130} y="288" textAnchor="middle" fontSize="12" fontWeight="600" className={C.pri}>{s}</text>
+          <line x1={124 + i * 130} y1="283" x2={138 + i * 130} y2="283" className={C.line} strokeWidth="1.6" markerEnd="url(#b3)"/>
+        </g>
+      ))}
+      <rect x="530" y="246" width="180" height="34" rx="8" className={C.boxW} strokeWidth="1.5"/>
+      <text x="620" y="268" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'人力減量','Fewer people needed')}</text>
+      <rect x="530" y="288" width="180" height="34" rx="8" className={C.box} strokeWidth="1"/>
+      <text x="620" y="310" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'角色消失','Role disappears')}</text>
+      <rect x="10" y="340" width="700" height="44" rx="8" className={C.gold}/>
+      <text x="360" y="367" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'短板原則：任一關鍵任務無法由機器安全完成，就必須留人','Weakest link: if any critical task is unsafe for machines, people stay')}</text>
+    </svg>
+  );
+};
+
+const SvgBars = ({ lang, title, items, note }) => (
+  <svg viewBox={`0 0 720 ${90 + items.length * 38}`} className="w-full h-auto" draggable="false" role="img">
+    <text x="20" y="28" fontSize="13" fontWeight="700" className={C.pri}>{title}</text>
+    {[0, 1, 2, 3, 4].map(l => <text key={l} x={270 + l * 105} y="54" textAnchor="middle" fontSize="11" className={C.sub}>{l}</text>)}
+    {items.map(([n, v, crit], i) => (
+      <g key={i}>
+        <text x="20" y={84 + i * 38} fontSize="12" className={C.txt}>{crit ? '★ ' : ''}{n}</text>
+        <rect x="270" y={72 + i * 38} width="420" height="16" rx="8" className="fill-slate-200 dark:fill-slate-700"/>
+        <rect x="270" y={72 + i * 38} width={Math.max(16, v * 105)} height="16" rx="8" className={crit && v <= 2 ? 'fill-[#D97706]' : C.dot}/>
+      </g>
+    ))}
+    <text x="20" y={80 + items.length * 38} fontSize="11" className={C.sub}>{note}</text>
+  </svg>
+);
+const SvgM4 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'職業駕駛各任務的替代程度（劃定城市範圍）','Substitution level by task (mapped city area)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'感知與反應','Perception, response'), 3, true], [tx(lang,'車輛操控','Vehicle control'), 3, true], [tx(lang,'交通規則與路線','Rules, routing'), 3, false], [tx(lang,'防禦性駕駛','Defensive driving'), 3, true], [tx(lang,'超出範圍時的處置','Outside the domain'), 2, true], [tx(lang,'搬運與送貨進門','Loading, door delivery'), 1, false], [tx(lang,'乘客服務與糾紛','Passenger service'), 1, false]]}/>;
+const SvgM5 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'純知識傳授各任務的替代程度（大學入門課程）','Substitution level by task (intro university course)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'講解概念、舉例','Explaining concepts'), 3, true], [tx(lang,'回答提問','Answering questions'), 3, false], [tx(lang,'出題與批改','Setting, marking tests'), 3, false], [tx(lang,'診斷迷思概念','Diagnosing misconceptions'), 2, false], [tx(lang,'更新學科內容','Updating content'), 2, false], [tx(lang,'決定什麼值得教','Deciding what to teach'), 1, true], [tx(lang,'評量與學歷認證','Assessment, certification'), 1, true]]}/>;
+const SvgM6 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'1 歲幼兒照顧各任務的替代程度（居家）','Substitution level by task (toddler care at home)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板 → 人力減量','★ critical task; orange marks the weakest link → fewer people needed')} items={[[tx(lang,'清潔與洗衣','Cleaning, laundry'), 3, false], [tx(lang,'記錄與通知父母','Records, parent updates'), 3, false], [tx(lang,'睡眠監測','Sleep monitoring'), 3, false], [tx(lang,'沖泡奶與備餐','Milk, meal prep'), 2, false], [tx(lang,'安全看護','Safety supervision'), 1, true], [tx(lang,'餵食、穿衣、換尿布','Feeding, dressing'), 0, true], [tx(lang,'陪睡與哄睡','Settling to sleep'), 0, true], [tx(lang,'語言與情感互動','Language, emotional bond'), 0, true]]}/>;
+
+const SvgM7 = ({ lang }) => {
+  const pr = [[tx(lang,'用任務思考','Think in tasks')], [tx(lang,'教會分析方法','Teach the method')], [tx(lang,'不恐嚇、不保證','No fear, no promises')], [tx(lang,'風險從求學開始','Risk starts at school')]];
+  const st = [[tx(lang,'國小','Primary'), tx(lang,'家裡的機器人','Robots at home')], [tx(lang,'國中','Junior high'), tx(lang,'拆解家長工作','Parents\' jobs as tasks')], [tx(lang,'高中','Senior high'), tx(lang,'十一構面評分','Score 11 dimensions')], [tx(lang,'大學','University'), tx(lang,'人機協作設計','Human–machine design')]];
+  return (
+    <svg viewBox="0 0 720 300" className="w-full h-auto" draggable="false" role="img">
+      <Arrow id="b7"/>
+      {pr.map(([s], i) => (
+        <g key={i}><rect x={10 + i * 177} y="20" width="165" height="56" rx="10" className={C.box} strokeWidth="1.2"/><text x={92 + i * 177} y="53" textAnchor="middle" fontSize="13" fontWeight="700" className={C.pri}>{s}</text></g>
+      ))}
+      <line x1="20" y1="150" x2="700" y2="150" className={C.line} strokeWidth="2" markerEnd="url(#b7)"/>
+      {st.map(([a, b], i) => (
+        <g key={i}>
+          <circle cx={92 + i * 177} cy="150" r="9" className="fill-[#D8C3A5] stroke-[#004030] dark:stroke-[#D8C3A5]" strokeWidth="1.5"/>
+          <text x={92 + i * 177} y="190" textAnchor="middle" fontSize="14" fontWeight="700" className={C.pri}>{a}</text>
+          <text x={92 + i * 177} y="212" textAnchor="middle" fontSize="11" className={C.sub}>{b}</text>
+        </g>
+      ))}
+      <rect x="10" y="240" width="700" height="44" rx="8" className={C.gold}/>
+      <text x="360" y="267" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'讓 AI 代寫作業，能力就沒有長出來','Letting AI do your homework means the ability never develops')}</text>
+    </svg>
+  );
+};
+const SVGS = { 1: SvgM1, 2: SvgM2, 3: SvgM3, 4: SvgM4, 5: SvgM5, 6: SvgM6, 7: SvgM7 };
+
+const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [flipped, setFlipped] = useState({});
+  const [readSet, setReadSet] = useState(new Set());
+  const [shownSet, setShownSet] = useState(new Set());
+  const [shuffledOrder, setShuffledOrder] = useState(() => [...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
+  const groupSize = 2;
+  const totalGroups = Math.ceil(terms.length / groupSize);
+  const startIdx = groupIdx * groupSize;
+  const currentCardIndices = shuffledOrder.slice(startIdx, startIdx + groupSize);
+  useEffect(() => {
+    const ns = new Set(shownSet);
+    currentCardIndices.forEach(idx => ns.add(idx));
+    if (ns.size !== shownSet.size) setShownSet(ns);
+  }, [groupIdx, shuffledOrder]);
+  const handleFlip = (origIdx) => {
+    setFlipped(f => ({ ...f, [origIdx]: !f[origIdx] }));
+    if (!readSet.has(origIdx)) {
+      const nr = new Set(readSet); nr.add(origIdx); setReadSet(nr);
+      if (onCardRead) onCardRead(moduleId, nr.size, shownSet.size, terms.length);
+    }
+  };
+  const restart = () => {
+    setShuffledOrder([...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
+    setGroupIdx(0); setFlipped({}); setShownSet(new Set());
+  };
+  const statusText = t.flip_status.replace('{read}', readSet.size).replace('{shown}', shownSet.size).replace('{total}', terms.length);
+  return (
+    <div className="mt-8">
+      <h3 className="text-lg font-bold uppercase tracking-wider text-slate-500 mb-2">{t.key_terms}</h3>
+      <p className="text-sm text-slate-400 mb-4">{statusText}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {currentCardIndices.map((origIdx) => {
+          const term = terms[origIdx];
+          return (
+            <div key={origIdx} className="perspective cursor-pointer h-40" onClick={() => handleFlip(origIdx)}>
+              <div className={`transform-style-3d relative w-full h-full transition-transform duration-500 ${flipped[origIdx] ? 'rotate-y-180' : ''}`}>
+                <div className="backface-hidden absolute inset-0 bg-white dark:bg-slate-800 rounded-xl p-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <p className="font-serif font-bold text-center text-[#004030] dark:text-[#D8C3A5]">{term.front}</p>
+                  <p className="text-xs text-slate-400 mt-2">{t.flip_prompt}</p>
+                </div>
+                <div className="backface-hidden rotate-y-180 absolute inset-0 bg-[#004030] dark:bg-slate-700 rounded-xl p-4 flex items-center justify-center">
+                  <p className="text-sm text-center text-[#D8C3A5] dark:text-slate-200 leading-relaxed">{term.back}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-3 mt-4">
+        <button onClick={restart} className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">{t.flip_retry}</button>
+        <button onClick={() => groupIdx < totalGroups - 1 && setGroupIdx(groupIdx + 1)} disabled={groupIdx >= totalGroups - 1}
+          className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.flip_next}</button>
+      </div>
+    </div>
+  );
+};
+
+const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName }) => {
+  const [selected, setSelected] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [groupIdx, setGroupIdx] = useState(0);
+  const groupSize = 2;
+  const [seed, setSeed] = useState(0);
+  const [quizIndices, setQuizIndices] = useState(() => [...Array(questions.length).keys()].sort(() => Math.random() - 0.5));
+  const totalGroups = Math.ceil(quizIndices.length / groupSize);
+  const [shuffledMaps, setShuffledMaps] = useState(() => quizIndices.map(qIdx => [...Array(questions[qIdx].opts.length).keys()].sort(() => Math.random() - 0.5)));
+  const totalAnswered = Object.keys(submitted).reduce((n, g) => n + Math.min(groupSize, quizIndices.length - g * groupSize), 0);
+  const computeCorrect = () => {
+    let c = 0;
+    quizIndices.forEach((qIdx, qi) => {
+      const g = Math.floor(qi / groupSize);
+      if (!submitted[g] || selected[qi] === undefined) return;
+      if (shuffledMaps[qi][selected[qi]] === _d(questions[qIdx].ans)) c++;
+    });
+    return c;
+  };
+  const statusText = t.quiz_status.replace('{correct}', computeCorrect()).replace('{answered}', totalAnswered).replace('{total}', quizIndices.length);
+  const currentStart = groupIdx * groupSize;
+  const currentIndices = quizIndices.slice(currentStart, currentStart + groupSize);
+  const handleGroupSubmit = () => {
+    const allDone = currentIndices.every((_, i) => selected[currentStart + i] !== undefined);
+    if (!allDone) return;
+    const newSub = { ...submitted, [groupIdx]: true };
+    setSubmitted(newSub);
+    const wrongQs = []; let correct = 0, answered = 0;
+    quizIndices.forEach((qIdx, qi) => {
+      const g = Math.floor(qi / groupSize);
+      if (!newSub[g] || selected[qi] === undefined) return;
+      answered++;
+      if (shuffledMaps[qi][selected[qi]] === _d(questions[qIdx].ans)) correct++;
+      else wrongQs.push(qIdx);
+    });
+    onQuizSubmit(moduleId, correct, answered, wrongQs, moduleName);
+  };
+  const retry = () => {
+    const qi = [...Array(questions.length).keys()].sort(() => Math.random() - 0.5);
+    setQuizIndices(qi);
+    setShuffledMaps(qi.map(q => [...Array(questions[q].opts.length).keys()].sort(() => Math.random() - 0.5)));
+    setGroupIdx(0); setSelected({}); setSubmitted({}); setSeed(seed + 1);
+  };
+  return (
+    <div className="mt-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700">
+      <h3 className="text-lg font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-2">{t.quiz_title}</h3>
+      <p className="text-sm text-slate-400 mb-6">{statusText}</p>
+      {currentIndices.map((qIdx, localI) => {
+        const qi = currentStart + localI;
+        const q = questions[qIdx];
+        const sMap = shuffledMaps[qi];
+        const isGrpSub = !!submitted[groupIdx];
+        const ok = sMap[selected[qi]] === _d(q.ans);
+        return (
+          <div key={`${seed}-${qIdx}`} className="mb-6">
+            <p className="font-bold mb-3 text-base">{qi + 1}. {q.q}</p>
+            <div className="space-y-2">
+              {sMap.map((origIdx, dIdx) => {
+                const isCorrect = origIdx === _d(q.ans);
+                const isSel = selected[qi] === dIdx;
+                return (
+                  <button key={dIdx} onClick={() => !isGrpSub && setSelected(s => ({ ...s, [qi]: dIdx }))}
+                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${isGrpSub
+                      ? isCorrect ? 'bg-green-100 border-green-500 dark:bg-green-900/30' : isSel ? 'bg-red-100 border-red-400 dark:bg-red-900/30' : 'border-slate-200 dark:border-slate-700'
+                      : isSel ? 'border-[#004030] dark:border-[#D8C3A5] bg-[#004030]/5 dark:bg-[#D8C3A5]/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-400'}`}>
+                    {q.opts[origIdx]}
+                  </button>
+                );
+              })}
+            </div>
+            {isGrpSub && (
+              <p className={`mt-2 text-sm italic ${ok ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                {ok ? `✓ ${t.correct}` : `✗ ${t.incorrect}`} — {t.explanation}{t.colon}{q.exp}
+              </p>
+            )}
+          </div>
+        );
+      })}
+      <div className="flex flex-wrap items-center gap-3">
+        {!submitted[groupIdx]
+          ? <button onClick={handleGroupSubmit} disabled={!currentIndices.every((_, i) => selected[currentStart + i] !== undefined)}
+              className="px-6 py-2 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.submit}</button>
+          : <>
+              {groupIdx < totalGroups - 1 && (
+                <button onClick={() => setGroupIdx(groupIdx + 1)} className="px-6 py-2 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">{t.quiz_next}</button>
+              )}
+              <button onClick={retry} className="px-6 py-2 border border-[#004030] dark:border-[#D8C3A5] text-[#004030] dark:text-[#D8C3A5] font-bold rounded-lg">{t.quiz_retry}</button>
+            </>}
+      </div>
+    </div>
+  );
+};
+
+const H2 = ({ children, icon, number }) => (
+  <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-[#004030] dark:text-[#D8C3A5] mb-6 flex items-start gap-3">
+    {icon && <span className="text-2xl mt-1" aria-hidden="true">{icon}</span>}
+    {number !== undefined && <span>{number}.</span>}
+    <span>{children}</span>
+  </h2>
+);
+
+const LinkCard = ({ label, url, desc }) => (
+  <a href={url} target="_blank" rel="noopener noreferrer"
+    className="block bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 hover:border-[#004030] dark:hover:border-[#D8C3A5] hover:shadow-md transition-all group">
+    <span className="font-bold font-serif text-sm text-[#004030] dark:text-[#D8C3A5] group-hover:underline">{label}</span>
+    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">{desc}</p>
+  </a>
+);
+
+const LabShell = ({ title, desc, children }) => (
+  <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700">
+    <h3 className="text-xl font-serif font-bold text-[#004030] dark:text-[#D8C3A5] mb-1">{title}</h3>
+    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{desc}</p>
+    {children}
+  </div>
+);
+const btnPri = 'px-5 py-2 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg text-sm disabled:opacity-40';
+const btnSec = 'px-5 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-700';
+
+const ClassifyLab = ({ lang, t, meta, cats, items: rawItems, after }) => {
+  const [items, setItems] = useState(() => [...rawItems].sort(() => Math.random() - 0.5));
+  const [ans, setAns] = useState({});
+  const [checked, setChecked] = useState(false);
+  const score = items.filter((it, i) => ans[i] === it.a).length;
+  return (
+    <LabShell title={meta.title} desc={meta.desc}>
+      <div className="space-y-3">
+        {items.map((it, i) => (
+          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+            <p className="text-sm mb-2">{i + 1}. {it[lang]}</p>
+            <div className="flex flex-wrap gap-2">
+              {cats.map((c, ci) => {
+                const sel = ans[i] === ci;
+                const right = checked && ci === it.a;
+                const wrong = checked && sel && ci !== it.a;
+                return (
+                  <button key={ci} onClick={() => { if (!checked) setAns(a => ({ ...a, [i]: ci })); }}
+                    className={`px-3 py-1.5 rounded-full text-xs border transition-all ${right ? 'bg-green-100 border-green-500 dark:bg-green-900/30' : wrong ? 'bg-red-100 border-red-400 dark:bg-red-900/30' : sel ? 'bg-[#004030] text-white border-[#004030] dark:bg-[#D8C3A5] dark:text-[#004030] dark:border-[#D8C3A5]' : 'border-slate-300 dark:border-slate-600 hover:border-slate-500'}`}>
+                    {c[lang]}
+                  </button>
+                );
+              })}
+            </div>
+            {checked && it.why && <p className={`mt-2 text-xs italic ${ans[i] === it.a ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>{ans[i] === it.a ? '✓' : '✗'} {it.why[lang]}</p>}
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-3 mt-4">
+        <button className={btnPri} disabled={Object.keys(ans).length < items.length || checked} onClick={() => setChecked(true)}>{t.lab_check}</button>
+        <button className={btnSec} onClick={() => { setAns({}); setChecked(false); setItems([...rawItems].sort(() => Math.random() - 0.5)); }}>{t.lab_reset}</button>
+        {checked && <span className="text-sm font-bold text-[#004030] dark:text-[#D8C3A5]">{t.lab_score.replace('{c}', score).replace('{n}', items.length)}</span>}
+      </div>
+      {checked && after}
+    </LabShell>
+  );
+};
+
+const ROLES = {
+  driver: { name: { zh: '職業駕駛（劃定城市）', en: 'Driver (mapped city)' }, tasks: [
+    { zh: '感知與反應', en: 'Perception and response', lv: 3, crit: true }, { zh: '車輛操控', en: 'Vehicle control', lv: 3, crit: true },
+    { zh: '交通規則與路線', en: 'Rules and routing', lv: 3, crit: false }, { zh: '防禦性駕駛', en: 'Defensive driving', lv: 3, crit: true },
+    { zh: '超出範圍時的處置', en: 'Handling situations outside the domain', lv: 2, crit: true }, { zh: '搬運與送貨進門', en: 'Loading and door delivery', lv: 1, crit: false },
+    { zh: '乘客服務與糾紛', en: 'Passenger service and disputes', lv: 1, crit: false }] },
+  teacher: { name: { zh: '教師（純知識傳授）', en: 'Teacher (transmission only)' }, tasks: [
+    { zh: '講解概念、舉例', en: 'Explaining concepts', lv: 3, crit: true }, { zh: '回答提問', en: 'Answering questions', lv: 3, crit: false },
+    { zh: '出題與批改', en: 'Setting and marking tests', lv: 3, crit: false }, { zh: '診斷迷思概念', en: 'Diagnosing misconceptions', lv: 2, crit: false },
+    { zh: '更新學科內容', en: 'Updating content', lv: 2, crit: false }, { zh: '決定什麼值得教', en: 'Deciding what is worth teaching', lv: 1, crit: true },
+    { zh: '評量與學歷認證', en: 'Assessment and certification', lv: 1, crit: true }] },
+  toddler: { name: { zh: '1 歲幼兒保母', en: 'Toddler caregiver' }, tasks: [
+    { zh: '清潔與洗衣', en: 'Cleaning and laundry', lv: 3, crit: false }, { zh: '記錄與通知父母', en: 'Records and parent updates', lv: 3, crit: false },
+    { zh: '睡眠監測', en: 'Sleep monitoring', lv: 3, crit: false }, { zh: '沖泡奶與備餐', en: 'Milk and meal prep', lv: 2, crit: false },
+    { zh: '安全看護', en: 'Safety supervision', lv: 1, crit: true }, { zh: '餵食、穿衣、換尿布', en: 'Feeding, dressing, nappies', lv: 0, crit: true },
+    { zh: '陪睡與哄睡', en: 'Settling to sleep', lv: 0, crit: true }, { zh: '語言與情感互動', en: 'Language and emotional bond', lv: 0, crit: true }] },
+};
+const AnalyzerLab = ({ lang, t, meta }) => {
+  const [role, setRole] = useState('driver');
+  const blank = (r) => ROLES[r].tasks.map(() => ({ lv: '', crit: false }));
+  const [st, setSt] = useState(() => blank('driver'));
+  const [shown, setShown] = useState(false);
+  const tasks = ROLES[role].tasks;
+  const pick = (r) => { setRole(r); setSt(blank(r)); setShown(false); };
+  const done = st.every(s => s.lv !== '');
+  const crit = st.map((s, i) => ({ ...s, i })).filter(s => s.crit);
+  const weak = crit.filter(s => Number(s.lv) <= 2);
+  const avg = done ? (st.reduce((a, s) => a + Number(s.lv), 0) / st.length).toFixed(1) : '—';
+  const lv = LV(lang);
+  return (
+    <LabShell title={meta.title} desc={meta.desc}>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {Object.keys(ROLES).map(r => (
+          <button key={r} onClick={() => pick(r)} className={`px-3 py-1.5 rounded-full text-sm border ${role === r ? 'bg-[#004030] text-white border-[#004030] dark:bg-[#D8C3A5] dark:text-[#004030] dark:border-[#D8C3A5]' : 'border-slate-300 dark:border-slate-600'}`}>{ROLES[r].name[lang]}</button>
+        ))}
+      </div>
+      <div className="space-y-2">
+        {tasks.map((tk, i) => (
+          <div key={`${role}-${i}`} className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2">
+            <span className="text-sm flex-1 min-w-[10rem]">{tk[lang]}</span>
+            <select value={st[i].lv} onChange={e => setSt(s => s.map((x, j) => j === i ? { ...x, lv: e.target.value } : x))} className="text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2 py-1">
+              <option value="">{tx(lang, '選擇等級', 'Choose level')}</option>
+              {lv.map((l, k) => <option key={k} value={k}>{l}</option>)}
+            </select>
+            <label className="text-xs flex items-center gap-1"><input type="checkbox" checked={st[i].crit} onChange={e => setSt(s => s.map((x, j) => j === i ? { ...x, crit: e.target.checked } : x))} className="accent-[#004030]"/>{tx(lang, '關鍵任務', 'Critical')}</label>
+            {shown && <span className="text-xs text-slate-500">{tx(lang, '參考：', 'Reference: ')}{lv[tk.lv]}{tk.crit ? tx(lang, '，關鍵', ', critical') : ''}</span>}
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-3 mt-4">
+        <button className={btnSec} onClick={() => setShown(!shown)}>{shown ? tx(lang, '隱藏參考判斷', 'Hide reference') : tx(lang, '顯示參考判斷', 'Show reference')}</button>
+        <button className={btnSec} onClick={() => { setSt(blank(role)); setShown(false); }}>{t.lab_reset}</button>
+      </div>
+      <div className="mt-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 p-4 text-sm space-y-1">
+        <p>{tx(lang, '平均替代程度：', 'Average level: ')}<b>{avg}</b></p>
+        {!done ? <p className="text-slate-500">{tx(lang, '請為每項任務選擇等級，並勾選關鍵任務。', 'Choose a level for every task and tick the critical ones.')}</p>
+          : crit.length === 0 ? <p className="text-amber-600 dark:text-amber-400">{tx(lang, '請至少標示一項關鍵任務，才能套用短板原則。', 'Mark at least one critical task to apply the weakest-link rule.')}</p>
+          : weak.length > 0 ? <>
+              <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '結果：人力減量，角色仍在', 'Outcome: fewer people needed; the role remains')}</p>
+              <p>{tx(lang, '短板任務（關鍵且等級 ≤ 2）：', 'Weakest-link tasks (critical, level ≤ 2): ')}{weak.map(w => tasks[w.i][lang]).join(tx(lang, '、', ', '))}</p>
+            </>
+          : <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '結果：在界定範圍內，角色可能消失；人轉向監督、例外處理與承擔責任', 'Outcome: within the domain the role may disappear; people move to supervision, exceptions and accountability')}</p>}
+      </div>
+    </LabShell>
+  );
+};
+const LAB2 = {
+  cats: [['0 人類執行','0 Human only'],['1 機器輔助','1 Machine assists'],['2 監督下執行','2 Supervised'],['3 範圍內替代','3 Within a domain'],['4 全面替代','4 Full substitution']].map(([zh, en]) => ({ zh, en })),
+  items: [
+    { zh: '導航 App 提供路線建議，由駕駛人決定並駕駛', en: 'A navigation app suggests routes; the driver decides and drives', a: 1, why: { zh: '機器提供建議，人類決策與執行：第 1 級。', en: 'The machine advises; the human decides and acts: Level 1.' } },
+    { zh: '高速公路自動跟車與車道維持，駕駛須全程注意、隨時接手', en: 'Highway adaptive cruise and lane keeping; the driver must watch and be ready to take over', a: 2, why: { zh: '機器執行，人類全程監督：第 2 級。', en: 'The machine acts under constant human supervision: Level 2.' } },
+    { zh: '劃定城區內無駕駛的付費計程車，超出範圍就不接單', en: 'Driverless paid taxis within a mapped area that refuse trips outside it', a: 3, why: { zh: '界定範圍內由機器執行：第 3 級。', en: 'The machine acts within a defined domain: Level 3.' } },
+    { zh: '翻譯軟體產出譯文，由譯者修改後定稿', en: 'Translation software drafts a text; a translator edits and finalises it', a: 1, why: { zh: '機器輔助，人類決定最終結果：第 1 級。', en: 'The machine assists; the human finalises: Level 1.' } },
+    { zh: 'AI 家教在課程範圍內講解與出題，超出範圍就轉給教師', en: 'An AI tutor explains and sets questions within the syllabus and refers anything else to the teacher', a: 3, why: { zh: '範圍內由機器執行，超出範圍交回人類：第 3 級。', en: 'Within the domain the machine acts; outside it hands back: Level 3.' } },
+    { zh: '在人類能開車的所有道路與天候下，都由機器駕駛', en: 'A machine drives on every road and in every weather a human could', a: 4, why: { zh: '所有情境皆由機器執行：第 4 級。', en: 'Machines act in every situation: Level 4.' } },
+    { zh: '倉儲揀貨機器人在固定貨架區作業，主管全程監看並處理異常', en: 'Warehouse picking robots work fixed aisles while a supervisor watches and handles faults', a: 2, why: { zh: '機器執行，人類全程監督並處理異常：第 2 級。', en: 'Machines act; a human supervises and handles faults: Level 2.' } },
+    { zh: '老師自己備課、講授與批改，沒有使用任何工具', en: 'A teacher prepares, teaches and marks entirely without tools', a: 0, why: { zh: '完全由人類執行：第 0 級。', en: 'Entirely human: Level 0.' } },
+  ],
+};
+const LAB3 = {
+  cats: [{ zh: '可寫入規則與訓練', en: 'Can be built into rules and training' }, { zh: '由組織承擔', en: 'Borne by an organisation' }, { zh: '由個人承擔', en: 'Borne by an individual' }],
+  items: [
+    { zh: '系統遇到不確定的路況時安全停車', en: 'The system stops safely when road conditions are unclear', a: 0, why: { zh: '負責任的行為，可以寫入系統。', en: 'Responsible behaviour that can be built in.' } },
+    { zh: '第 3 級系統啟動中發生事故的賠償', en: 'Compensation for a crash while a Level 3 system is engaged', a: 1, why: { zh: '依 Mercedes 的聲明，由製造商承擔。', en: 'Per Mercedes-Benz, the manufacturer bears it.' } },
+    { zh: '系統發出接手請求後，駕駛未接手而發生事故', en: 'A crash after the driver ignores a takeover request', a: 2, why: { zh: '駕駛未盡注意義務，由個人承擔。', en: 'The driver breached the duty of care.' } },
+    { zh: 'AI 家教不直接給答案，改為引導提問', en: 'An AI tutor prompts with questions instead of giving answers', a: 0, why: { zh: '可寫入的防護設計。', en: 'A guardrail that can be built in.' } },
+    { zh: '學期成績與學位認證出錯', en: 'Errors in course grades or degree certification', a: 1, why: { zh: '由學校等組織承擔。', en: 'Borne by the school as an organisation.' } },
+    { zh: '監視器已發出警示，照顧者卻沒有處理', en: 'A monitor raised an alert but the caregiver did not respond', a: 2, why: { zh: '照顧者未盡注意義務，由個人承擔。', en: 'The caregiver failed in their duty of care.' } },
+    { zh: '拒絕執行可能傷害他人的指令', en: 'Refusing instructions that could harm others', a: 0, why: { zh: '負責任的行為，可以寫入系統。', en: 'Responsible behaviour that can be built in.' } },
+    { zh: '無人計程車營運城市內的事故理賠', en: 'Claims for crashes involving driverless taxis in their service city', a: 1, why: { zh: '由營運商承擔。', en: 'Borne by the operator.' } },
+  ],
+};
+const LAB4 = {
+  cats: [{ zh: '智慧監測器', en: 'Smart monitor' }, { zh: '廚房自動化', en: 'Kitchen automation' }, { zh: '掃地機器人、洗衣機', en: 'Robot vacuum, washer' }, { zh: 'AI 記錄與摘要', en: 'AI records, summaries' }, { zh: '需要人', en: 'Needs a person' }],
+  items: [
+    { zh: '清潔地板', en: 'Cleaning floors', a: 2, why: { zh: '掃地機器人可接手。', en: 'A robot vacuum can do it.' } },
+    { zh: '洗衣服', en: 'Washing clothes', a: 2, why: { zh: '洗衣機可接手。', en: 'A washing machine can do it.' } },
+    { zh: '夜間睡眠監測與哭聲警示', en: 'Night-time sleep monitoring and cry alerts', a: 0, why: { zh: '智慧監測器可偵測並警示。', en: 'A smart monitor can detect and alert.' } },
+    { zh: '沖泡奶', en: 'Preparing milk', a: 1, why: { zh: '泡奶機可接手。', en: 'A formula maker can do it.' } },
+    { zh: '每日照顧紀錄與通知父母', en: 'Daily care logs and updates to parents', a: 3, why: { zh: 'AI 可整理紀錄與摘要。', en: 'AI can compile logs and summaries.' } },
+    { zh: '幼兒攀爬時即時阻止跌落', en: 'Stopping a climbing toddler from falling in time', a: 4, why: { zh: '需要即時實體介入。', en: 'Needs immediate physical action.' } },
+    { zh: '餵食與穿衣', en: 'Feeding and dressing', a: 4, why: { zh: '需要對脆弱身體靈巧操作。', en: 'Needs dexterous handling of a fragile body.' } },
+    { zh: '陪睡與哄睡', en: 'Settling to sleep', a: 4, why: { zh: '1 歲幼兒仍需有人在旁。', en: 'A one-year-old still needs someone there.' } },
+    { zh: '回應牙牙學語、陪玩互動', en: 'Responding to babbling and playing together', a: 4, why: { zh: '語言發展需要真人互動。', en: 'Language development needs live interaction.' } },
+  ],
+};
+const Lab4After = ({ lang }) => (
+  <div className="mt-4 rounded-xl bg-[#F3EBDD] dark:bg-[#D8C3A5]/10 p-4 text-sm">
+    <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '短板任務：', 'Weakest-link tasks: ')}{LAB4.items.filter(i => i.a === 4).map(i => i[lang]).join(tx(lang, '、', ', '))}</p>
+    <p className="mt-1">{tx(lang, '結果：多機組合接手後勤與監測，但關鍵照顧任務仍需人 → 人力減量，角色不消失。', 'Outcome: machines take over logistics and monitoring, but critical care still needs a person → fewer people, not none.')}</p>
+  </div>
+);
+
+function App() {
+  const LS_KEY = 'HMS_SPA_analytics';
+  const LS_STU = 'HMS_SPA_student';
+  const LS_VER = 'HMS_SPA_version';
+  const loadLS = (key, fb) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fb; } catch { return fb; } };
+  const emptyAnalytics = () => ({ time: Array(TOTAL).fill(0), clicks: Array(TOTAL).fill(0), quizCorrect: Array(TOTAL).fill(0), quizTotal: Array(TOTAL).fill(0), cardsRead: Array(TOTAL).fill(0), cardsTotal: Array(TOTAL).fill(0), visited: Array(TOTAL).fill(false), wrongTopics: {} });
+  const [lang, setLang] = useState('en');
+  const [isDark, setIsDark] = useState(true);
+  const [module, setModule] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [ttsState, setTtsState] = useState('idle');
+  const [studentInfo, setStudentInfo] = useState(() => loadLS(LS_STU, { group: '', dept: '', id: '', nameEn: '', nameZh: '' }));
+  const [analytics, setAnalytics] = useState(() => {
+    const a = loadLS(LS_KEY, null);
+    if (!a || !Array.isArray(a.time) || a.time.length !== TOTAL) return emptyAnalytics();
+    return { ...emptyAnalytics(), ...a };
+  });
+  const menuRef = useRef(null);
+  const t = dict[lang];
+
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(LS_VER);
+      if (v && v !== APP_VER && localStorage.getItem(LS_KEY)) {
+        if (window.confirm(`${dict.zh.analytics_refresh_prompt}\n${dict.en.analytics_refresh_prompt}`)) {
+          localStorage.removeItem(LS_KEY); setAnalytics(emptyAnalytics());
+        }
+      }
+      localStorage.setItem(LS_VER, APP_VER);
+    } catch {}
+  }, []);
+  useEffect(() => { document.documentElement.classList.toggle('dark', isDark); }, [isDark]);
+  useEffect(() => { document.documentElement.lang = lang === 'zh' ? 'zh-Hant-TW' : 'en-GB'; }, [lang]);
+  useEffect(() => { try { localStorage.setItem(LS_KEY, JSON.stringify(analytics)); } catch {} }, [analytics]);
+  useEffect(() => { try { localStorage.setItem(LS_STU, JSON.stringify(studentInfo)); } catch {} }, [studentInfo]);
+  useEffect(() => {
+    setAnalytics(a => { const v = [...a.visited]; v[module] = true; return { ...a, visited: v }; });
+    const id = setInterval(() => {
+      if (document.hidden) return;
+      setAnalytics(a => { const tm = [...a.time]; tm[module] += 1; return { ...a, time: tm }; });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [module]);
+  useEffect(() => {
+    const h = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    document.addEventListener('mousedown', h); document.addEventListener('touchstart', h);
+    return () => { document.removeEventListener('mousedown', h); document.removeEventListener('touchstart', h); };
+  }, []);
+  useEffect(() => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); setTtsState('idle'); } }, [module, lang]);
+
+  const handleQuizSubmit = (mid, correct, total, wrongQs) => {
+    setAnalytics(a => {
+      const qc = [...a.quizCorrect], qt = [...a.quizTotal];
+      qc[mid] = correct; qt[mid] = total;
+      const wt = { ...a.wrongTopics }; wt[mid] = wrongQs || [];
+      return { ...a, quizCorrect: qc, quizTotal: qt, wrongTopics: wt };
+    });
+  };
+  const handleCardRead = (mid, readCount, shownCount, totalCount) => {
+    setAnalytics(a => { const cr = [...a.cardsRead], ct = [...a.cardsTotal]; cr[mid] = readCount; ct[mid] = totalCount; return { ...a, cardsRead: cr, cardsTotal: ct }; });
+  };
+  const addClick = () => setAnalytics(a => { const c = [...a.clicks]; c[module] += 1; return { ...a, clicks: c }; });
+  const go = (m) => { setModule(m); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  const ICONS = ['🧭', '⚖️', '🧩', '🎚️', '🚗', '🎓', '🧸', '🏫', '⚗️', '🌐', '📊'];
+  const modulesList = [...Array(TOTAL).keys()].map(i => {
+    let nav, title;
+    if (i === 0) { nav = t.m0_nav; title = t.m0_title; }
+    else if (i <= NUM_LEARN) { nav = t[`m${i}_nav`]; title = t[`m${i}_title`]; }
+    else if (i === IDX_LAB) { nav = t.mlab_nav; title = t.mlab_title; }
+    else if (i === IDX_RES) { nav = t.mres_nav; title = t.mres_title; }
+    else { nav = t.mana_nav; title = t.analytics_title; }
+    return { id: i, num: i, icon: ICONS[i], nav, title };
+  });
+  const SideIcon = ({ i }) => i === IDX_LAB ? <IconZapLab size={16}/> : i === IDX_RES ? <IconGlobe size={16}/> : i === IDX_ANA ? <IconActivity size={16}/> : <span aria-hidden="true">{ICONS[i]}</span>;
+
+  const handleTTS = (action) => {
+    if (!('speechSynthesis' in window)) return;
+    if (action === 'stop') { speechSynthesis.cancel(); setTtsState('idle'); return; }
+    if (action === 'pause') { speechSynthesis.pause(); setTtsState('paused'); return; }
+    if (ttsState === 'paused') { speechSynthesis.resume(); setTtsState('playing'); return; }
+    speechSynthesis.cancel();
+    const sep = lang === 'zh' ? '。 ' : '. ';
+    let texts = [];
+    if (module === 0) {
+      texts = [t.title, t.subtitle, t.m0_title, t.m0_intro, t.m0_why, t.m0_why_desc, ...t.m0_stats.map(s => `${s.label}: ${s.val}`), ...t.m0_modules.map(m => `${m.title}. ${m.desc}`)];
+    } else if (module <= NUM_LEARN) {
+      const mk = `m${module}`;
+      texts = [t[`${mk}_title`], t.overview_label, t[`${mk}_overview`], t.highlights_label, ...t[`${mk}_highlights`], t.deep_dive_label, ...[1, 2, 3, 4, 5].map(n => t[`${mk}_p${n}`]).filter(Boolean), t.key_terms, ...t[`${mk}_terms`].flatMap(tm => [tm.front, tm.back]), t.wrapup_label, t[`${mk}_wrapup`]];
+    } else if (module === IDX_LAB) {
+      texts = [t.mlab_title, t.mlab_desc, ...t.mlab_labs.map(l => `${l.title}. ${l.desc}`)];
+    } else if (module === IDX_RES) {
+      texts = [t.mres_title, t.mres_desc, ...t.mres_groups.flatMap(g => [g.title, ...g.links.map(l => `${l.label}. ${l.desc}`)])];
+    } else {
+      const tc = analytics.quizCorrect.reduce((a, b) => a + b, 0), ta = analytics.quizTotal.reduce((a, b) => a + b, 0);
+      const oa = ta > 0 ? Math.round(tc / ta * 100) : 0;
+      const wk = [];
+      for (let i = 1; i <= NUM_LEARN; i++) if (analytics.quizTotal[i] > 0) { const a = Math.round(analytics.quizCorrect[i] / analytics.quizTotal[i] * 100); if (a < 75) wk.push({ name: modulesList[i].title, acc: a }); }
+      wk.sort((a, b) => a.acc - b.acc);
+      texts = [t.analytics_title, t.analytics_desc, `${t.analytics_total_time}: ${analytics.time.reduce((a, b) => a + b, 0)}${t.analytics_sec}`, `${t.analytics_total_clicks}: ${analytics.clicks.reduce((a, b) => a + b, 0)}${t.analytics_times}`, `${t.analytics_overall_acc}: ${oa}%`];
+      if (wk.length) { texts.push(t.analytics_wp_tts_intro); wk.forEach(w => texts.push(t.analytics_wp_tts_module.replace('{name}', w.name).replace('{acc}', w.acc))); }
+      else if (ta > 0) texts.push(t.analytics_wp_tts_allpass);
+    }
+    const strip = s => String(s).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '').replace(/→/g, lang === 'zh' ? '到' : 'to').replace(/[＝=]/g, lang === 'zh' ? '等於' : 'equals').replace(/[｜|]/g, ', ');
+    texts = texts.filter(Boolean).map(strip);
+    const utt = new SpeechSynthesisUtterance(texts.join(sep));
+    utt.rate = 0.95;
+    const voices = speechSynthesis.getVoices();
+    if (lang === 'zh') {
+      const v = voices.find(v => v.lang === 'zh-TW' && v.name.includes('Yating')) || voices.find(v => v.lang === 'zh-TW') || voices.find(v => v.lang.startsWith('zh'));
+      if (v) utt.voice = v; utt.lang = 'zh-TW';
+    } else {
+      const v = voices.find(v => v.lang === 'en-GB' && (v.name.includes('Male') || v.name.includes('Daniel'))) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
+      if (v) utt.voice = v; utt.lang = 'en-GB';
+    }
+    utt.onend = () => setTtsState('idle'); utt.onerror = () => setTtsState('idle');
+    speechSynthesis.speak(utt); setTtsState('playing');
+  };
+
+  const qText = (mid, q) => typeof q === 'number' ? ((t[`m${mid}_q`] || [])[q] || {}).q || '' : String(q);
+  const label = (s) => <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-2">{s}</h3>;
+
+  const renderM0 = () => (
+    <div className="space-y-8 animate-fade-in">
+      <div className="rounded-2xl bg-[#004030] dark:bg-slate-800 text-white p-6 sm:p-10 border border-[#D8C3A5]/30">
+        <p className="text-[#D8C3A5] font-serif font-black tracking-widest text-sm mb-3">{t.brand}</p>
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black leading-tight mb-3">{t.title}</h1>
+        <p className="text-[#D8C3A5] text-base sm:text-lg mb-6">{t.subtitle}</p>
+        <div className="inline-block rounded-xl bg-white/10 px-4 py-3 font-serif text-lg sm:text-2xl">Competency = f(K, S, A | {lang === 'zh' ? '情境, 任務' : 'context, task'})</div>
+        <p className="text-xs text-[#D8C3A5]/80 mt-2">{t.m0_formula_note}</p>
+      </div>
+      <H2 icon={ICONS[0]} number={0}>{t.m0_title}</H2>
+      <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">{t.m0_intro}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {t.m0_stats.map((s, i) => (
+          <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+            <p className="text-3xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{s.val}</p>
+            <p className="text-xs text-slate-500 mt-1">{s.label}</p>
+          </div>
+        ))}
+      </div>
+      <div className="bg-[#004030]/5 dark:bg-[#D8C3A5]/5 rounded-xl p-5 border-l-4 border-[#D8C3A5]">
+        <h3 className="font-serif font-bold text-xl text-[#004030] dark:text-[#D8C3A5] mb-2">{t.m0_why}</h3>
+        <p className="leading-relaxed text-slate-700 dark:text-slate-300">{t.m0_why_desc}</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {t.m0_modules.map((m, i) => (
+          <button key={i} onClick={() => go(i + 1)} className="text-left bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 hover:border-[#004030] dark:hover:border-[#D8C3A5] transition-all flex items-start gap-3">
+            <span className="text-2xl" aria-hidden="true">{ICONS[i + 1]}</span>
+            <span><span className="block text-xs font-bold text-slate-400">{m.num}</span><span className="block font-serif font-bold text-[#004030] dark:text-[#D8C3A5]">{m.title}</span><span className="block text-sm text-slate-500 dark:text-slate-400">{m.desc}</span></span>
+          </button>
+        ))}
+      </div>
+      <button onClick={() => go(1)} className="px-8 py-3 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-xl">{t.m0_start}</button>
+    </div>
+  );
+
+  const renderLearn = () => {
+    const mk = `m${module}`; const Fig = SVGS[module];
+    return (
+      <div className="space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300 animate-fade-in">
+        <H2 icon={ICONS[module]} number={module}>{t[`${mk}_title`]}</H2>
+        <div className="bg-[#004030]/5 dark:bg-[#D8C3A5]/5 rounded-xl p-5 border-l-4 border-[#D8C3A5]">{label(t.overview_label)}<p>{t[`${mk}_overview`]}</p></div>
+        <div>{label(t.highlights_label)}
+          <div className="flex flex-wrap gap-2">{t[`${mk}_highlights`].map((h, i) => <span key={i} className="px-3 py-1 bg-[#004030]/10 dark:bg-[#D8C3A5]/10 text-[#004030] dark:text-[#D8C3A5] rounded-full text-sm font-medium">{h}</span>)}</div>
+        </div>
+        <div className="space-y-4">{label(t.deep_dive_label)}
+          <p>{t[`${mk}_p1`]}</p>
+          <p className="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg italic font-serif">{t[`${mk}_p2`]}</p>
+          <p>{t[`${mk}_p3`]}</p>
+          {t[`${mk}_p4`] && <p>{t[`${mk}_p4`]}</p>}
+        </div>
+        <FigWrap title={t.figure_label}><Fig lang={lang}/></FigWrap>
+        <FlipCardDeck key={`cards-${module}-${lang}`} terms={t[`${mk}_terms`]} t={t} moduleId={module} onCardRead={handleCardRead}/>
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-5">{label(t.wrapup_label)}<p className="italic">{t[`${mk}_wrapup`]}</p></div>
+        <ModuleQuiz key={`quiz-${module}`} questions={t[`${mk}_q`]} t={t} moduleId={module} onQuizSubmit={handleQuizSubmit} moduleName={t[`${mk}_title`]}/>
+      </div>
+    );
+  };
+
+  const renderLab = () => (
+    <div className="space-y-6 animate-fade-in">
+      <H2 icon={ICONS[IDX_LAB]} number={IDX_LAB}>{t.mlab_title}</H2>
+      <p className="text-lg text-slate-700 dark:text-slate-300">{t.mlab_desc}</p>
+      <AnalyzerLab lang={lang} t={t} meta={t.mlab_labs[0]}/>
+      <ClassifyLab lang={lang} t={t} meta={t.mlab_labs[1]} cats={LAB2.cats} items={LAB2.items}/>
+      <ClassifyLab lang={lang} t={t} meta={t.mlab_labs[2]} cats={LAB3.cats} items={LAB3.items}/>
+      <ClassifyLab lang={lang} t={t} meta={t.mlab_labs[3]} cats={LAB4.cats} items={LAB4.items} after={<Lab4After lang={lang}/>}/>
+    </div>
+  );
+
+  const renderRes = () => (
+    <div className="space-y-6 animate-fade-in">
+      <H2 icon={ICONS[IDX_RES]} number={IDX_RES}>{t.mres_title}</H2>
+      <p className="text-lg text-slate-700 dark:text-slate-300">{t.mres_desc}</p>
+      {t.mres_groups.map((g, i) => (
+        <div key={i}>
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{g.title}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{g.links.map((l, j) => <LinkCard key={j} {...l}/>)}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderAna = () => {
+    const sum = arr => arr.reduce((a, b) => a + b, 0);
+    const learnIdx = [...Array(NUM_LEARN).keys()].map(i => i + 1);
+    const tc = sum(analytics.quizCorrect), ta = sum(analytics.quizTotal);
+    const oa = ta > 0 ? Math.round(tc / ta * 100) : 0;
+    const cr = sum(analytics.cardsRead), ctot = learnIdx.reduce((a, i) => a + t[`m${i}_terms`].length, 0);
+    const cu = ctot > 0 ? Math.round(cr / ctot * 100) : 0;
+    const weak = learnIdx.filter(i => analytics.quizTotal[i] > 0 && analytics.quizCorrect[i] / analytics.quizTotal[i] < 0.75).sort((a, b) => analytics.quizCorrect[a] / analytics.quizTotal[a] - analytics.quizCorrect[b] / analytics.quizTotal[b]);
+    const visitedN = learnIdx.filter(i => analytics.visited[i]).length;
+    const ready = studentInfo.group && studentInfo.dept && studentInfo.id && studentInfo.nameEn && studentInfo.nameZh;
+    const exportCSV = () => {
+      if (!ready) return;
+      const esc = v => `"${String(v).replace(/"/g, '""')}"`;
+      const head = t.csv_headers;
+      const rows = modulesList.map(m => {
+        const i = m.id; const qn = i >= 1 && i <= NUM_LEARN ? t[`m${i}_q`].length : '';
+        const cardsTot = i >= 1 && i <= NUM_LEARN ? t[`m${i}_terms`].length : '';
+        const acc = analytics.quizTotal[i] > 0 ? Math.round(analytics.quizCorrect[i] / analytics.quizTotal[i] * 100) : '';
+        return [studentInfo.group, studentInfo.dept, studentInfo.id, studentInfo.nameEn, studentInfo.nameZh, m.nav, analytics.time[i], analytics.clicks[i], analytics.visited[i] ? t.csv_yes : t.csv_no, analytics.quizCorrect[i], analytics.quizTotal[i], qn, acc, analytics.cardsRead[i], cardsTot, (analytics.wrongTopics[i] || []).map(q => qText(i, q)).join(t.csv_sep)].map(esc).join(',');
+      });
+      const csv = '\uFEFF' + head.map(esc).join(',') + '\n' + rows.join('\n');
+      const d = new Date(); const p2 = n => String(n).padStart(2, '0');
+      const stamp = `${d.getFullYear()}${p2(d.getMonth() + 1)}${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}`;
+      const who = lang === 'zh' ? studentInfo.nameZh : studentInfo.nameEn;
+      const fname = `${t.brand} ${t.csv_title}_${studentInfo.group} ${who}_${stamp}.csv`;
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+    const clearAll = () => {
+      if (!window.confirm(t.analytics_wp_clear_confirm)) return;
+      try { localStorage.removeItem(LS_KEY); } catch {}
+      setAnalytics(emptyAnalytics());
+    };
+    const inp = 'w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm';
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <H2 icon={ICONS[IDX_ANA]} number={IDX_ANA}>{t.analytics_title}</H2>
+        <p className="text-lg text-slate-700 dark:text-slate-300">{t.analytics_desc}</p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="text-sm text-green-600 dark:text-green-400">{t.analytics_wp_saved}</span>
+          <button onClick={clearAll} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold">{t.analytics_wp_clear}</button>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[[t.analytics_total_time, `${sum(analytics.time)}${t.analytics_sec}`], [t.analytics_total_clicks, `${sum(analytics.clicks)}${t.analytics_times}`], [t.analytics_overall_acc, ta > 0 ? `${oa}%` : '—'], [t.analytics_card_usage, `${cu}%`]].map(([a, b], i) => (
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+              <p className="text-xs text-slate-500">{a}</p><p className="text-2xl font-serif font-black text-[#004030] dark:text-[#D8C3A5] mt-1">{b}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700">
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.analytics_progress_title}</h3>
+          <div className="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-4"><div className="h-full bg-[#004030] dark:bg-[#D8C3A5]" style={{ width: `${Math.round(visitedN / NUM_LEARN * 100)}%` }}></div></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {learnIdx.map(i => (
+              <button key={i} onClick={() => go(i)} className="text-left rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:border-[#004030] dark:hover:border-[#D8C3A5]">
+                <span className="block text-sm font-bold truncate">{ICONS[i]} {modulesList[i].nav}</span>
+                <span className="text-xs text-slate-500">{analytics.visited[i] ? `✓ ${t.analytics_progress_visited}` : t.analytics_progress_not_visited}{analytics.quizTotal[i] > 0 ? ` · ${t.analytics_progress_quiz_done}` : ''}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700">
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.analytics_wp_title}</h3>
+          {ta === 0 ? <p className="text-sm text-slate-500">{t.analytics_wp_none}</p>
+            : weak.length === 0 ? <p className="text-sm text-green-600 dark:text-green-400">{t.analytics_wp_allpass}</p>
+            : weak.map(i => (
+              <div key={i} className="mb-3 rounded-lg bg-red-50 dark:bg-red-900/20 p-3">
+                <p className="font-bold text-sm text-red-700 dark:text-red-300">{modulesList[i].title} — {Math.round(analytics.quizCorrect[i] / analytics.quizTotal[i] * 100)}%</p>
+                {(analytics.wrongTopics[i] || []).length > 0 && <><p className="text-xs text-slate-500 mt-1">{t.analytics_wp_incorrect}</p><ul className="list-disc ml-5 text-xs text-slate-600 dark:text-slate-300">{analytics.wrongTopics[i].map((q, k) => <li key={k}>{qText(i, q)}</li>)}</ul></>}
+                <button onClick={() => go(i)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] mt-1">{t.analytics_wp_goto}</button>
+              </div>
+            ))}
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 overflow-x-auto">
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.analytics_detail_title}</h3>
+          <table className="w-full text-sm min-w-[560px]">
+            <thead><tr className="text-left text-slate-500 border-b border-slate-200 dark:border-slate-700"><th className="py-2 pr-2">{t.analytics_module}</th><th className="py-2 pr-2">{t.analytics_time}</th><th className="py-2 pr-2">{t.analytics_clicks}</th><th className="py-2 pr-2">{t.analytics_cards_read_total}</th><th className="py-2">{t.analytics_correct_ans_total}</th></tr></thead>
+            <tbody>
+              {modulesList.map(m => {
+                const i = m.id; const learn = i >= 1 && i <= NUM_LEARN;
+                return (
+                  <tr key={i} className="border-b border-slate-100 dark:border-slate-700/60">
+                    <td className="py-2 pr-2">{m.nav}</td>
+                    <td className="py-2 pr-2">{analytics.time[i]}{t.analytics_sec}</td>
+                    <td className="py-2 pr-2">{analytics.clicks[i]}</td>
+                    <td className="py-2 pr-2">{learn ? `${analytics.cardsRead[i]} / ${t[`m${i}_terms`].length}` : '—'}</td>
+                    <td className="py-2">{learn ? (analytics.quizTotal[i] > 0 ? `${analytics.quizCorrect[i]} / ${analytics.quizTotal[i]} / ${t[`m${i}_q`].length}` : t.analytics_no_data) : '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700">
+          <h3 className="font-serif font-bold text-lg text-[#004030] dark:text-[#D8C3A5] mb-3">{t.analytics_form_title}</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label className="text-sm">{t.analytics_group}
+              <select className={inp} value={studentInfo.group} onChange={e => setStudentInfo(s => ({ ...s, group: e.target.value }))}>
+                <option value="">{t.analytics_group_select}</option>{t.group_options.map(g => <option key={g} value={g}>{g}</option>)}
+              </select></label>
+            <label className="text-sm">{t.analytics_dept}<input className={inp} placeholder={t.analytics_dept_ph} value={studentInfo.dept} onChange={e => setStudentInfo(s => ({ ...s, dept: sanitizeDept(e.target.value) }))}/></label>
+            <label className="text-sm">{t.analytics_id}<input className={inp} inputMode="numeric" placeholder={t.analytics_id_ph} value={studentInfo.id} onChange={e => setStudentInfo(s => ({ ...s, id: sanitizeStudentId(e.target.value) }))}/></label>
+            <label className="text-sm">{t.analytics_name_en}<input className={inp} placeholder={t.analytics_name_en_ph} value={studentInfo.nameEn} onChange={e => setStudentInfo(s => ({ ...s, nameEn: sanitizeName(e.target.value) }))}/></label>
+            <label className="text-sm">{t.analytics_name_zh}<input className={inp} placeholder={t.analytics_name_zh_ph} value={studentInfo.nameZh} onChange={e => setStudentInfo(s => ({ ...s, nameZh: sanitizeName(e.target.value) }))}/></label>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 mt-4">
+            <button onClick={exportCSV} disabled={!ready} className={btnPri}>{t.analytics_export_csv}</button>
+            {!ready && <span className="text-xs text-amber-600 dark:text-amber-400">{t.analytics_fill_required}</span>}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const body = module === 0 ? renderM0() : module <= NUM_LEARN ? renderLearn() : module === IDX_LAB ? renderLab() : module === IDX_RES ? renderRes() : renderAna();
+
+  return (
+    <div className="min-h-screen flex flex-col pt-16 max-w-[100vw]">
+      <header className="fixed top-0 left-0 right-0 h-16 bg-[#004030] dark:bg-slate-900 text-white z-50 shadow-lg border-b border-[#D8C3A5]/30">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+            <div className="relative" ref={menuRef}>
+              <button aria-label={t.nav_modules} onClick={() => setMenuOpen(!menuOpen)} className="p-2 hover:bg-white/10 rounded-lg">{menuOpen ? <IconX/> : <IconMenu/>}</button>
+              {menuOpen && (
+                <div className="absolute top-full left-0 mt-1 w-72 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-5rem)] overflow-y-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 z-[100] text-slate-700 dark:text-slate-200">
+                  <p className="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wider text-slate-400">{t.nav_modules}</p>
+                  {modulesList.map(m => (
+                    <button key={m.id} onClick={() => go(m.id)} className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-700 ${module === m.id ? 'bg-[#004030]/10 dark:bg-[#D8C3A5]/10 font-bold text-[#004030] dark:text-[#D8C3A5]' : ''}`}>
+                      <span aria-hidden="true">{m.icon}</span><span className="truncate">{m.nav}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button aria-label={t.nav_home} onClick={() => go(0)} className="p-2 hover:bg-white/10 rounded-lg"><IconHome size={18}/></button>
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 min-w-0">
+              <span className="font-serif font-black text-[#D8C3A5] text-lg tracking-widest">{t.brand}</span>
+              <span className="hidden sm:inline font-serif font-bold text-sm md:text-base truncate max-w-[40vw] lg:max-w-none">{t.title}</span>
+            </button>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <button aria-label={t.audio_read} title={t.audio_read} onClick={() => handleTTS(ttsState === 'playing' ? 'pause' : 'play')} className="p-2 hover:bg-white/10 rounded-lg">{ttsState === 'playing' ? <IconPause size={18}/> : <IconPlay size={18}/>}</button>
+            {ttsState !== 'idle' && <button aria-label={t.audio_stop} onClick={() => handleTTS('stop')} className="p-2 hover:bg-white/10 rounded-lg"><IconSquare size={16}/></button>}
+            <button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} className="px-2 sm:px-3 py-1.5 rounded-lg border border-[#D8C3A5]/50 text-[#D8C3A5] text-xs sm:text-sm font-bold hover:bg-white/10">{lang === 'en' ? '中文' : 'EN'}</button>
+            <button aria-label="Theme" onClick={() => setIsDark(!isDark)} className="p-2 hover:bg-white/10 rounded-lg">{isDark ? <IconSun size={18}/> : <IconMoon size={18}/>}</button>
+          </div>
+        </div>
+      </header>
+      <div className="flex-1 w-full max-w-7xl mx-auto flex">
+        <aside className="hidden md:block w-64 shrink-0 border-r border-slate-200 dark:border-slate-800">
+          <nav className="sticky top-16 max-h-[calc(100vh-6rem)] overflow-y-auto py-6 px-3 space-y-1">
+            {modulesList.map(m => (
+              <button key={m.id} onClick={() => go(m.id)} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left transition-all ${module === m.id ? 'bg-[#004030] text-white dark:bg-[#D8C3A5] dark:text-[#004030] font-bold' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'}`}>
+                <SideIcon i={m.id}/><span className="truncate">{m.nav}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+        <main className="flex-1 min-w-0 px-4 sm:px-8 py-8" onClick={addClick}>
+          <div key={`${module}`} className="max-w-4xl mx-auto">
+            {body}
+            <div className="mt-12 flex justify-between items-center pt-8 border-t border-slate-300 dark:border-slate-700">
+              <button onClick={() => go(Math.max(0, module - 1))} disabled={module === 0} className="px-4 py-2 rounded-lg border border-[#004030] dark:border-[#D8C3A5] text-[#004030] dark:text-[#D8C3A5] font-bold text-sm disabled:opacity-0">{t.nav_prev}</button>
+              <button onClick={() => go(Math.min(TOTAL - 1, module + 1))} disabled={module === TOTAL - 1} className="px-4 py-2 rounded-lg bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold text-sm disabled:opacity-0">{t.nav_next}</button>
+            </div>
+          </div>
+        </main>
+      </div>
+      <footer className="h-8 bg-[#004030] flex items-center justify-between px-3 sm:px-4 shrink-0 gap-2">
+        <span className="text-[#D8C3A5]/60 text-[10px] sm:text-xs truncate">{t.date} · {t.copyright}</span>
+        <span className="text-[#D8C3A5]/60 text-[10px] sm:text-xs flex items-center gap-3 shrink-0">
+          <span>{t.architect_label}&nbsp;<a href={t.architect_url} target="_blank" rel="noopener noreferrer" className="text-[#D8C3A5] hover:text-white underline">{t.architect_name}</a></span>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-[#D8C3A5] hover:text-white font-bold">Top ↑</button>
+        </span>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
