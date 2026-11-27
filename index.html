@@ -210,9 +210,9 @@ const dict = {
   ],
   "m0_nav": "0. 執行概要",
   "m0_title": "執行概要",
-  "m0_intro": "人工智慧代理與實體機器人正在接手越來越多原本由人執行的工作，但「哪些工作會被取代」這個問題問錯了。工作是由許多任務組成的，替代發生在「任務 × 情境」的層次，而不是整個職業。本單元先說明如何公平比較人與機器：固定哪一種人、哪一個系統、哪一項任務，並用 Competency = f(K, S, A｜情境, 任務) 這條公式同時描述人與機器。接著介紹十一個評估構面、五級替代程度、多機協作的短板原則，以及六步驟分析流程。最後用汽車駕駛、純知識傳授的教師與 1 歲幼兒保母三個案例實際操作，並討論學生應如何面對未來工作被替代的挑戰。完成本單元後，您應能拆解任何一份工作，判斷其中哪些任務可能被替代、為什麼，以及人在其中的新角色。本單元共有七個學習模組與四個互動實驗，適合大學部各科系學生，不需要程式設計背景。",
+  "m0_intro": "人工智慧代理與實體機器人正在接手越來越多原本由人執行的工作，但「哪些工作會被取代」這個問題問錯了。工作是由許多任務組成的，替代發生在「任務 × 情境」的層次，而不是整個職業。本單元先說明如何公平比較人與機器：固定哪一種人、哪一個系統、哪一項任務，並用 Competency = f(K, S, A｜情境, 任務) 這條公式同時描述人與機器。接著介紹十一個評估構面、五級替代程度、多機協作的最弱環節原則，以及六步驟分析流程。最後用汽車駕駛、純知識傳授的教師與 1 歲幼兒保母三個案例實際操作，並討論學生應如何面對未來工作被替代的挑戰。完成本單元後，您應能拆解任何一份工作，判斷其中哪些任務可能被替代、為什麼，以及人在其中的新角色。本單元共有七個學習模組與四個互動實驗，適合大學部各科系學生，不需要程式設計背景。",
   "m0_why": "為什麼要學這個分析方法？",
-  "m0_why_desc": "新聞常給出「某某職業會消失」或「某某職業很安全」的清單，但機器的能力每年都在進步，清單很快就會過時。真正有用的是一套能自己重複使用的分析方法：拆解任務、指明情境、評估構面、找出短板。這套方法也提醒我們，被替代的風險從求學階段就開始了。",
+  "m0_why_desc": "新聞常給出「某某職業會消失」或「某某職業很安全」的清單，但機器的能力每年都在進步，清單很快就會過時。真正有用的是一套能自己重複使用的分析方法：拆解任務、指明情境、評估構面、找出最弱環節。這套方法也提醒我們，被替代的風險從求學階段就開始了。",
   "m0_modules": [
    {
     "num": "01",
@@ -227,12 +227,12 @@ const dict = {
    {
     "num": "03",
     "title": "替代程度、多機協作與分析流程",
-    "desc": "五級替代、短板原則與六步驟"
+    "desc": "五級替代、最弱環節原則與六步驟"
    },
    {
     "num": "04",
     "title": "案例一：汽車駕駛",
-    "desc": "運行設計範圍與責任移轉"
+    "desc": "運作設計範圍與責任移轉"
    },
    {
     "num": "05",
@@ -288,7 +288,7 @@ const dict = {
    },
    {
     "title": "實驗四：多機協作設計：1 歲幼兒保母",
-    "desc": "為每項照顧任務配對機器，找出必須留人的短板任務。"
+    "desc": "為每項照顧任務配對機器，找出必須留人的最弱環節任務。"
    }
   ],
   "lab_check": "檢查答案",
@@ -417,7 +417,7 @@ const dict = {
    },
    {
     "front": "機器的基礎能力",
-    "back": "模型架構、參數規模、上下文長度、感測器與機構規格"
+    "back": "模型架構、參數規模、脈絡長度、感測器與機構規格"
    },
    {
     "front": "負責任的行為",
@@ -514,7 +514,7 @@ const dict = {
   "m2_wrapup": "把職業拆成任務，再指明每項任務所處的情境，是替代性分析的第一步。十一個構面從技術、社會與風險、經濟與系統三方面提供判斷依據，但它們不是固定答案：機器進步會移動邊界，新任務也會不斷出現。評估時要記錄日期，並定期重新檢視。",
   "m2_p1": "一份職業是由多項任務組成的。Autor、Levy 與 Murnane（2003）發現，電腦替代的是能依明確規則完成的例行任務，並與非例行的問題解決及複雜溝通互補；而且同一職業內部的任務變化，就占整體影響的將近一半。換句話說，職業名稱可能不變，但工作內容已經改變。",
   "m2_p2": "替代的單位是「任務 × 情境」，不是職業。",
-  "m2_p3": "Frey 與 Osborne（2017）提出自動化的三個瓶頸：感知與操作、創意智能、社交智能。生成式 AI 出現後，後兩項已部分鬆動，因此本單元改用十一個構面：技術面包括任務可規格化、情境封閉度、資料與回饋、實體操作；社會與風險面包括社交互動與信任、錯誤代價、責任可歸屬；經濟與系統面包括經濟性、任務可拆解性、整合協調成本、情境可改造性。",
+  "m2_p3": "Frey 與 Osborne（2017）提出自動化的三個瓶頸：感知與操作、創意智力、社交智力。生成式 AI 出現後，後兩項已部分鬆動，因此本單元改用十一個構面：技術面包括任務可規格化、情境封閉度、資料與回饋、實體操作；社會與風險面包括社交互動與信任、錯誤代價、責任可歸屬；經濟與系統面包括經濟性、任務可拆解性、整合協調成本、情境可改造性。",
   "m2_p4": "Acemoglu 與 Restrepo（2019）提醒，自動化會讓機器取代原本由人執行的任務，稱為取代效果；但新任務的出現會讓勞動重新受到需求，稱為恢復效果。因此分析時不只要看哪些任務會被取代，也要看哪些新任務會出現。所有構面也都會隨機器進步而移動，評估結果有時效性。",
   "m2_terms": [
    {
@@ -523,7 +523,7 @@ const dict = {
    },
    {
     "front": "自動化瓶頸",
-    "back": "感知與操作、創意智能、社交智能（Frey & Osborne, 2017）"
+    "back": "感知與操作、創意智力、社交智力（Frey & Osborne, 2017）"
    },
    {
     "front": "取代效果",
@@ -569,7 +569,7 @@ const dict = {
     "q": "生成式 AI 出現後，Frey 與 Osborne 的哪些瓶頸已部分鬆動？",
     "opts": [
      "感知、實體操作與靈巧的手部動作",
-     "創意智能與社交智能",
+     "創意智力與社交智力",
      "資料儲存與傳輸",
      "責任歸屬與保險"
     ],
@@ -581,7 +581,7 @@ const dict = {
     "opts": [
      "取代效果",
      "恢復效果",
-     "短板效果",
+     "最弱環節效果",
      "規模效果"
     ],
     "ans": _A1,
@@ -612,20 +612,20 @@ const dict = {
   ],
   "m3_nav": "3. 程度與流程",
   "m3_title": "替代程度、多機協作與分析流程",
-  "m3_overview": "替代不是全有或全無。本模組介紹五級替代程度、多台機器組合完成一個角色時的短板原則，以及從界定角色到規劃新角色的六步驟分析流程。",
+  "m3_overview": "替代不是全有或全無。本模組介紹五級替代程度、多台機器組合完成一個角色時的最弱環節原則，以及從界定角色到規劃新角色的六步驟分析流程。",
   "m3_highlights": [
    "五級替代程度",
    "範圍內替代",
    "多機協作",
-   "短板原則",
+   "最弱環節原則",
    "人力減量",
    "六步驟流程"
   ],
-  "m3_wrapup": "五級替代程度讓我們能精確描述人與機器的分工，而不是只說「會不會被取代」。多機協作提醒我們：整個角色需要多少人，取決於最難替代的那項關鍵任務，也就是短板。六步驟流程把這些概念串成可重複使用的方法，而且必須隨機器更新定期重做。",
+  "m3_wrapup": "五級替代程度讓我們能精確描述人與機器的分工，而不是只說「會不會被取代」。多機協作提醒我們：整個角色需要多少人，取決於最難替代的那項關鍵任務，也就是最弱環節。六步驟流程把這些概念串成可重複使用的方法，而且必須隨機器更新定期重做。",
   "m3_p1": "借用汽車自動駕駛的分級邏輯，替代程度可分為五級：0 人類執行；1 機器輔助，人類決策與執行；2 監督下執行，機器執行而人類全程監督、隨時接手；3 範圍內替代，在界定的範圍內由機器執行，超出範圍時交回人類或安全停止；4 全面替代，在人類能執行的所有情境中都由機器執行。",
   "m3_p2": "只要有一項關鍵任務無法由機器安全完成，就必須保留人力。",
   "m3_p3": "替代不必由一台萬能機器完成。一個角色可以拆成多項任務，分別交給專長不同的機器，再整合成一套系統。這時要問三個問題：每項任務都有機器能做嗎？機器之間能否整合，出事由誰負責？能不能改造情境來配合機器？結果要區分兩種：人力減量，即一個人搭配機器負責更多對象；以及角色消失。",
-  "m3_p4": "分析流程有六個步驟：1 界定角色與情境；2 拆解任務，標示關鍵任務；3 為每項任務配對機器，比較人與機器的構成要素；4 以十一構面評分；5 判定替代程度並找出短板；6 規劃人的新角色，例如監督、例外處理、整合與承擔責任。機器更新或情境改變時，要回到步驟 1 重新評估。",
+  "m3_p4": "分析流程有六個步驟：1 界定角色與情境；2 拆解任務，標示關鍵任務；3 為每項任務配對機器，比較人與機器的構成要素；4 以十一構面評分；5 判定替代程度並找出最弱環節；6 規劃人的新角色，例如監督、例外處理、整合與承擔責任。機器更新或情境改變時，要回到步驟 1 重新評估。",
   "m3_terms": [
    {
     "front": "範圍內替代",
@@ -636,7 +636,7 @@ const dict = {
     "back": "第 2 級：機器執行，人類全程監督、隨時接手"
    },
    {
-    "front": "短板原則",
+    "front": "最弱環節原則",
     "back": "任一關鍵任務無法由機器安全完成，就必須保留人力"
    },
    {
@@ -676,7 +676,7 @@ const dict = {
     "exp": "超出界定範圍時交回人類或安全停止。"
    },
    {
-    "q": "依短板原則，一個角色最少需要多少人力取決於什麼？",
+    "q": "依最弱環節原則，一個角色最少需要多少人力取決於什麼？",
     "opts": [
      "最容易替代的任務",
      "最難替代的關鍵任務",
@@ -722,19 +722,19 @@ const dict = {
   ],
   "m4_nav": "4. 案例：駕駛",
   "m4_title": "案例一：汽車駕駛",
-  "m4_overview": "汽車駕駛是單一整合系統替代人類任務的典型案例。本模組依六步驟分析職業駕駛，說明運行設計範圍、各項任務的替代程度，以及責任如何從駕駛人移轉到製造商。",
+  "m4_overview": "汽車駕駛是單一整合系統替代人類任務的典型案例。本模組依六步驟分析職業駕駛，說明運作設計範圍、各項任務的替代程度，以及責任如何從駕駛人移轉到製造商。",
   "m4_highlights": [
    "SAE J3016",
    "動態駕駛任務",
-   "運行設計範圍 ODD",
+   "運作設計範圍 ODD",
    "第 3 級",
    "責任移轉",
    "無人計程車"
   ],
   "m4_wrapup": "駕駛案例顯示，替代程度取決於情境：在劃定範圍的城市道路上已進入範圍內替代，但鄉間道路、惡劣天候與最後一哩的搬運仍需要人。責任並沒有消失，而是從駕駛人移轉到製造商或營運商。擴大運作範圍時，每一次都要重新驗證，這也說明替代邊界雖然會移動，但速度受到驗證成本限制。",
-  "m4_p1": "SAE J3016 把駕駛自動化定義為持續執行部分或全部「動態駕駛任務」的系統，並依人類駕駛與系統各自的角色分為 0 到 5 級（SAE International, 2026）。第 3 級指系統在限定條件下駕駛，發出警示或明顯故障時需要人類接手。這個「限定條件」稱為運行設計範圍（ODD），也就是公式中的「情境」。",
-  "m4_p2": "職業駕駛不會整個被替代；被替代的是特定運行設計範圍內的駕駛任務。",
-  "m4_p3": "拆解職業駕駛的任務：感知與反應、車輛操控、交通規則與路線，在運行設計範圍內機器表現較強，因為它能 360 度感測、不會疲勞、反應快。防禦性駕駛可以寫入規則，但邊緣情境仍待驗證。超出範圍時的處置、搬運貨物、送貨進門與乘客服務，則仍是機器的弱項。",
+  "m4_p1": "SAE J3016 把駕駛自動化定義為持續執行部分或全部「動態駕駛任務」的系統，並依人類駕駛與系統各自的角色分為 0 到 5 級（SAE International, 2026）。第 3 級指系統在限定條件下駕駛，發出警示或明顯故障時需要人類接手。這個「限定條件」稱為運作設計範圍（ODD），也就是公式中的「情境」。",
+  "m4_p2": "職業駕駛不會整個被替代；被替代的是特定運作設計範圍內的駕駛任務。",
+  "m4_p3": "拆解職業駕駛的任務：感知與反應、車輛操控、交通規則與路線，在運作設計範圍內機器表現較強，因為它能 360 度感測、不會疲勞、反應快。防禦性駕駛可以寫入規則，但極端情境仍待驗證。超出範圍時的處置、搬運貨物、送貨進門與乘客服務，則仍是機器的弱項。",
   "m4_p4": "責任方面，Mercedes-Benz 表示其第 3 級系統啟動時的事故由公司負責，系統關閉時由車主負責；駕駛若未依要求接手則不在此限。責任是從駕駛人移轉到製造商，而非移轉到機器。現況上，Waymo 在 2026 年 9 月已把付費無人計程車擴展到美國 14 座城市，每進入新城市前都先試營運約兩個月。人的角色則轉向遠端監督、例外處理、實體操作、客戶服務與承擔責任。",
   "m4_terms": [
    {
@@ -742,7 +742,7 @@ const dict = {
     "back": "駕駛時所有即時的操作與戰術功能，例如轉向、加減速與偵測"
    },
    {
-    "front": "運行設計範圍",
+    "front": "運作設計範圍",
     "back": "系統被設計可安全運作的條件，例如地區、天候、時段"
    },
    {
@@ -767,15 +767,15 @@ const dict = {
     "q": "在駕駛案例中，公式裡的「情境」對應到什麼？",
     "opts": [
      "車輛的品牌",
-     "運行設計範圍",
+     "運作設計範圍",
      "駕駛人的年資",
      "道路的收費標準"
     ],
     "ans": _A1,
-    "exp": "運行設計範圍界定系統能安全運作的條件。"
+    "exp": "運作設計範圍界定系統能安全運作的條件。"
    },
    {
-    "q": "下列哪一項是機器在運行設計範圍內較強的任務？",
+    "q": "下列哪一項是機器在運作設計範圍內較強的任務？",
     "opts": [
      "送貨進門與搬運貨物",
      "處理乘客之間的糾紛",
@@ -934,7 +934,7 @@ const dict = {
      "自律能力仍弱、需要大人陪伴的國小學童",
      "自律且動機強的成人學習者",
      "高風險的國家證照考試",
-     "內容快速變化的前沿領域"
+     "內容快速變化的尖端領域"
     ],
     "ans": _A1,
     "exp": "學習者本身具備動機與自律時，最不需要教練補位。"
@@ -955,7 +955,7 @@ const dict = {
   "m6_p1": "拆解 1 歲幼兒保母的任務：清潔與洗衣（掃地機器人、洗衣機）、與父母溝通及記錄（AI 摘要）的替代性高；睡眠監測（智慧監測器）中高；沖泡奶與備餐中等。安全看護雖有攝影機偵測與警示，卻無法即時伸手阻止跌倒或誤食；餵食、穿衣、換尿布、洗澡、陪睡與抱起安撫，都需要對脆弱身體做靈巧操作，目前沒有安全可用的機器。",
   "m6_p2": "多機組合可以接手後勤與監測，但身體照護、即時安全介入與回應式互動仍需要人。",
   "m6_p3": "情境（年齡）會改變替代範圍。獲美國食品藥物管理局核准的 SNOO 智慧搖籃能讓嬰兒維持仰睡，偵測到哭聲時自動以白噪音與搖動回應，但只適用於出生到六個月、尚不會翻身的嬰兒；到了 1 歲就不再適用。語言發展也需要真人：Kuhl、Tsao 與 Liu（2003）發現，9 個月大的嬰兒與真人互動能學會辨識中文語音，只看錄影或只聽錄音則完全沒有效果。",
-  "m6_p4": "依短板原則，即時安全介入、身體照護與回應式互動這三項關鍵任務仍需人類，因此結果是人力減量，而非角色消失。照顧者把時間從家務與監看，移到餵食、穿衣、陪睡與互動，並負責整合多台設備、在警示時即時處理。能即時回應的 AI 是否能促進幼兒的語言與社會發展，目前尚無足夠研究，不宜推論。",
+  "m6_p4": "依最弱環節原則，即時安全介入、身體照護與回應式互動這三項關鍵任務仍需人類，因此結果是人力減量，而非角色消失。照顧者把時間從家務與監看，移到餵食、穿衣、陪睡與互動，並負責整合多台設備、在警示時即時處理。能即時回應的 AI 是否能促進幼兒的語言與社會發展，目前尚無足夠研究，不宜推論。",
   "m6_terms": [
    {
     "front": "學步兒",
@@ -1028,7 +1028,7 @@ const dict = {
     "exp": "錄影與錄音組完全沒有效果。"
    },
    {
-    "q": "依短板原則，幼兒照顧的替代結果是什麼？",
+    "q": "依最弱環節原則，幼兒照顧的替代結果是什麼？",
     "opts": [
      "角色完全消失",
      "人力減量，角色仍在",
@@ -1064,7 +1064,7 @@ const dict = {
   "m7_wrapup": "讓學生理解被替代的挑戰，重點不在預測哪些職業會消失，而在培養一套可以不斷重複使用的分析能力，並在求學過程中真正長出能力。從國小的家事觀察到大學的人機協作設計，每個階段都在練習同一件事：拆解任務、指明情境、判斷人與機器的分工，並找出人該承擔的新角色。",
   "m7_p1": "四個核心原則：第一，用任務思考，問「這份工作有哪些任務會被機器做」，而不是「哪些職業會消失」。第二，不給安全清單，要教會分析方法，因為替代邊界持續移動，清單很快會過時。第三，既不恐嚇也不保證：舊任務會被取代，新任務也會出現（Acemoglu & Restrepo, 2019），重點是培養移動到新任務的能力。",
   "m7_p2": "讓 AI 代寫作業，等於從一開始就沒有培養能力，未來最容易被替代。",
-  "m7_p3": "第四個原則是：被替代的風險從求學階段就開始。把 AI 當拐杖的學生，拿掉 AI 後表現反而更差（Bastani et al., 2025）。在國小階段，可以讓學生列出家事，找出哪些已由機器完成，再分組「幫保母設計機器人團隊」，自己發現機器做不到的事。國中階段可以訪問家長的職業，把工作拆成「機器做、機器幫忙、需要人」三類，並做 AI 拐杖實驗。",
+  "m7_p3": "第四個原則是：被替代的風險從求學階段就開始。把 AI 當拐杖的學生，拿掉 AI 後表現反而更差（Bastani et al., 2025）。在國小階段，可以讓學生列出家事，找出哪些已由機器完成，再分組「幫保母設計機器人團隊」，自己發現機器做不到的事。國中階段可以訪談家長的工作內容，把工作拆成「機器做、機器幫忙、需要人」三類，並做 AI 拐杖實驗。",
   "m7_p4": "高中階段可結合生涯規劃與自主學習，選一個目標職業，列出任務並用十一構面評分，推想 2035 年的情境。大學階段則以自己的科系為例，例如國際企業的貿易文件、市場研究、翻譯與談判，設計人機協作流程，找出自己要發展的構成要素與要承擔的責任。要避免的錯誤包括：用恐嚇代替理解、提供安全清單、只談職業名稱，以及忽略責任與新任務。",
   "m7_terms": [
    {
@@ -2364,7 +2364,7 @@ const SvgM3 = ({ lang }) => {
       <rect x="530" y="288" width="180" height="34" rx="8" className={C.box} strokeWidth="1"/>
       <text x="620" y="310" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'角色消失','Role disappears')}</text>
       <rect x="10" y="340" width="700" height="44" rx="8" className={C.gold}/>
-      <text x="360" y="367" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'短板原則：任一關鍵任務無法由機器安全完成，就必須留人','Weakest link: if any critical task is unsafe for machines, people stay')}</text>
+      <text x="360" y="367" textAnchor="middle" fontSize="12" fontWeight="700" className={C.pri}>{tx(lang,'最弱環節原則：任一關鍵任務無法由機器安全完成，就必須留人','Weakest link: if any critical task is unsafe for machines, people stay')}</text>
     </svg>
   );
 };
@@ -2383,9 +2383,9 @@ const SvgBars = ({ lang, title, items, note }) => (
     <text x="20" y={80 + items.length * 38} fontSize="11" className={C.sub}>{note}</text>
   </svg>
 );
-const SvgM4 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'職業駕駛各任務的替代程度（劃定城市範圍）','Substitution level by task (mapped city area)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'感知與反應','Perception, response'), 3, true], [tx(lang,'車輛操控','Vehicle control'), 3, true], [tx(lang,'交通規則與路線','Rules, routing'), 3, false], [tx(lang,'防禦性駕駛','Defensive driving'), 3, true], [tx(lang,'超出範圍時的處置','Outside the domain'), 2, true], [tx(lang,'搬運與送貨進門','Loading, door delivery'), 1, false], [tx(lang,'乘客服務與糾紛','Passenger service'), 1, false]]}/>;
-const SvgM5 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'純知識傳授各任務的替代程度（大學入門課程）','Substitution level by task (intro university course)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'講解概念、舉例','Explaining concepts'), 3, true], [tx(lang,'回答提問','Answering questions'), 3, false], [tx(lang,'出題與批改','Setting, marking tests'), 3, false], [tx(lang,'診斷迷思概念','Diagnosing misconceptions'), 2, false], [tx(lang,'更新學科內容','Updating content'), 2, false], [tx(lang,'決定什麼值得教','Deciding what to teach'), 1, true], [tx(lang,'評量與學歷認證','Assessment, certification'), 1, true]]}/>;
-const SvgM6 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'1 歲幼兒照顧各任務的替代程度（居家）','Substitution level by task (toddler care at home)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的短板 → 人力減量','★ critical task; orange marks the weakest link → fewer people needed')} items={[[tx(lang,'清潔與洗衣','Cleaning, laundry'), 3, false], [tx(lang,'記錄與通知父母','Records, parent updates'), 3, false], [tx(lang,'睡眠監測','Sleep monitoring'), 3, false], [tx(lang,'沖泡奶與備餐','Milk, meal prep'), 2, false], [tx(lang,'安全看護','Safety supervision'), 1, true], [tx(lang,'餵食、穿衣、換尿布','Feeding, dressing'), 0, true], [tx(lang,'陪睡與哄睡','Settling to sleep'), 0, true], [tx(lang,'語言與情感互動','Language, emotional bond'), 0, true]]}/>;
+const SvgM4 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'職業駕駛各任務的替代程度（劃定城市範圍）','Substitution level by task (mapped city area)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的最弱環節','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'感知與反應','Perception, response'), 3, true], [tx(lang,'車輛操控','Vehicle control'), 3, true], [tx(lang,'交通規則與路線','Rules, routing'), 3, false], [tx(lang,'防禦性駕駛','Defensive driving'), 3, true], [tx(lang,'超出範圍時的處置','Outside the domain'), 2, true], [tx(lang,'搬運與送貨進門','Loading, door delivery'), 1, false], [tx(lang,'乘客服務與糾紛','Passenger service'), 1, false]]}/>;
+const SvgM5 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'純知識傳授各任務的替代程度（大學入門課程）','Substitution level by task (intro university course)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的最弱環節','★ critical task; orange marks the weakest link that still needs people')} items={[[tx(lang,'講解概念、舉例','Explaining concepts'), 3, true], [tx(lang,'回答提問','Answering questions'), 3, false], [tx(lang,'出題與批改','Setting, marking tests'), 3, false], [tx(lang,'診斷迷思概念','Diagnosing misconceptions'), 2, false], [tx(lang,'更新學科內容','Updating content'), 2, false], [tx(lang,'決定什麼值得教','Deciding what to teach'), 1, true], [tx(lang,'評量與學歷認證','Assessment, certification'), 1, true]]}/>;
+const SvgM6 = ({ lang }) => <SvgBars lang={lang} title={tx(lang,'1 歲幼兒照顧各任務的替代程度（居家）','Substitution level by task (toddler care at home)')} note={tx(lang,'★ 關鍵任務；橘色為仍需人的最弱環節 → 人力減量','★ critical task; orange marks the weakest link → fewer people needed')} items={[[tx(lang,'清潔與洗衣','Cleaning, laundry'), 3, false], [tx(lang,'記錄與通知父母','Records, parent updates'), 3, false], [tx(lang,'睡眠監測','Sleep monitoring'), 3, false], [tx(lang,'沖泡奶與備餐','Milk, meal prep'), 2, false], [tx(lang,'安全看護','Safety supervision'), 1, true], [tx(lang,'餵食、穿衣、換尿布','Feeding, dressing'), 0, true], [tx(lang,'陪睡與哄睡','Settling to sleep'), 0, true], [tx(lang,'語言與情感互動','Language, emotional bond'), 0, true]]}/>;
 
 const SvgM7 = ({ lang }) => {
   const pr = [[tx(lang,'用任務思考','Think in tasks')], [tx(lang,'教會分析方法','Teach the method')], [tx(lang,'不恐嚇、不保證','No fear, no promises')], [tx(lang,'風險從求學開始','Risk starts at school')]];
@@ -2682,10 +2682,10 @@ const AnalyzerLab = ({ lang, t, meta }) => {
       <div className="mt-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 p-4 text-sm space-y-1">
         <p>{tx(lang, '平均替代程度：', 'Average level: ')}<b>{avg}</b></p>
         {!done ? <p className="text-slate-500">{tx(lang, '請為每項任務選擇等級，並勾選關鍵任務。', 'Choose a level for every task and tick the critical ones.')}</p>
-          : crit.length === 0 ? <p className="text-amber-600 dark:text-amber-400">{tx(lang, '請至少標示一項關鍵任務，才能套用短板原則。', 'Mark at least one critical task to apply the weakest-link rule.')}</p>
+          : crit.length === 0 ? <p className="text-amber-600 dark:text-amber-400">{tx(lang, '請至少標示一項關鍵任務，才能套用最弱環節原則。', 'Mark at least one critical task to apply the weakest-link rule.')}</p>
           : weak.length > 0 ? <>
               <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '結果：人力減量，角色仍在', 'Outcome: fewer people needed; the role remains')}</p>
-              <p>{tx(lang, '短板任務（關鍵且等級 ≤ 2）：', 'Weakest-link tasks (critical, level ≤ 2): ')}{weak.map(w => tasks[w.i][lang]).join(tx(lang, '、', ', '))}</p>
+              <p>{tx(lang, '最弱環節任務（關鍵且等級 ≤ 2）：', 'Weakest-link tasks (critical, level ≤ 2): ')}{weak.map(w => tasks[w.i][lang]).join(tx(lang, '、', ', '))}</p>
             </>
           : <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '結果：在界定範圍內，角色可能消失；人轉向監督、例外處理與承擔責任', 'Outcome: within the domain the role may disappear; people move to supervision, exceptions and accountability')}</p>}
       </div>
@@ -2734,7 +2734,7 @@ const LAB4 = {
 };
 const Lab4After = ({ lang }) => (
   <div className="mt-4 rounded-xl bg-[#F3EBDD] dark:bg-[#D8C3A5]/10 p-4 text-sm">
-    <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '短板任務：', 'Weakest-link tasks: ')}{LAB4.items.filter(i => i.a === 4).map(i => i[lang]).join(tx(lang, '、', ', '))}</p>
+    <p className="font-bold text-[#004030] dark:text-[#D8C3A5]">{tx(lang, '最弱環節任務：', 'Weakest-link tasks: ')}{LAB4.items.filter(i => i.a === 4).map(i => i[lang]).join(tx(lang, '、', ', '))}</p>
     <p className="mt-1">{tx(lang, '結果：多機組合接手後勤與監測，但關鍵照顧任務仍需人 → 人力減量，角色不消失。', 'Outcome: machines take over logistics and monitoring, but critical care still needs a person → fewer people, not none.')}</p>
   </div>
 );
